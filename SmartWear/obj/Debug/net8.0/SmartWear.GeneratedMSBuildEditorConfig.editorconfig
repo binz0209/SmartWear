@@ -28,62 +28,6 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[D:/PRN222/SmartWear/SmartWear/Views/404/NotFound.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcNDA0XE5vdEZvdW5kLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/About/AboutUs.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWJvdXRcQWJvdXRVcy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Account/Account.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2NvdW50LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Account/ForgotPassword.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Account/Login.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Account/Register.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Blog/Blog.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmxvZ1xCbG9nLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Blog/BlogDetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmxvZ1xCbG9nRGV0YWlscy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Cart/Cart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxDYXJ0LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Cart/Checkout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxDaGVja291dC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Cart/OrderConfirmation.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxPcmRlckNvbmZpcm1hdGlvbi5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Cart/ShippingInfo.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxTaGlwcGluZ0luZm8uY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Contact/ContactUs.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFjdFxDb250YWN0VXMuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/FAQ/FAQ.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRkFRXEZBUS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
 [D:/PRN222/SmartWear/SmartWear/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -92,48 +36,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/PRN222/SmartWear/SmartWear/Views/Privacy/PrivacyPolicy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpdmFjeVxQcml2YWN5UG9saWN5LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Product/Category.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxDYXRlZ29yeS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Product/ProductDetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxQcm9kdWN0RGV0YWlscy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Product/SearchResults.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxTZWFyY2hSZXN1bHRzLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
 [D:/PRN222/SmartWear/SmartWear/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/PRN222/SmartWear/SmartWear/Views/Shared/_Footer.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Gb290ZXIuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Shared/_Header.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9IZWFkZXIuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
 [D:/PRN222/SmartWear/SmartWear/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Shared/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WaWV3SW1wb3J0cy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Shared/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WaWV3U3RhcnQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/PRN222/SmartWear/SmartWear/Views/Terms/TermsOfService.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVybXNcVGVybXNPZlNlcnZpY2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/PRN222/SmartWear/SmartWear/Views/_ViewImports.cshtml]

@@ -336,9 +336,6 @@ D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\refint\SmartWear.dll
 D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\SmartWear.pdb
 D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\SmartWear.genruntimeconfig.cache
 D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\ref\SmartWear.dll
-<<<<<<< HEAD
-D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
-=======
 D:\CSHARP\Project_PRN222\SmartWear\SmartWear\bin\Debug\net8.0\appsettings.Development.json
 D:\CSHARP\Project_PRN222\SmartWear\SmartWear\bin\Debug\net8.0\appsettings.json
 D:\CSHARP\Project_PRN222\SmartWear\SmartWear\bin\Debug\net8.0\SmartWear.staticwebassets.runtime.json
@@ -506,4 +503,4 @@ D:\CSHARP\Project_PRN222\SmartWear\SmartWear\obj\Debug\net8.0\refint\SmartWear.d
 D:\CSHARP\Project_PRN222\SmartWear\SmartWear\obj\Debug\net8.0\SmartWear.pdb
 D:\CSHARP\Project_PRN222\SmartWear\SmartWear\obj\Debug\net8.0\SmartWear.genruntimeconfig.cache
 D:\CSHARP\Project_PRN222\SmartWear\SmartWear\obj\Debug\net8.0\ref\SmartWear.dll
->>>>>>> b9f2ad015ad57308d14f9aa2fbc9b41a23e31d46
+D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
