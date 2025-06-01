@@ -336,3 +336,4 @@ D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\refint\SmartWear.dll
 D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\SmartWear.pdb
 D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\SmartWear.genruntimeconfig.cache
 D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\ref\SmartWear.dll
+D:\PRN222\SmartWear\SmartWear\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
