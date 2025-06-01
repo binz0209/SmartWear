@@ -1,5 +1,5 @@
 /SmartWear/appsettings.json
 .vs/
-/bin/
-/obj/
+/SmartWear/bin/
+/SmartWear/obj/
 /wwwroot/
