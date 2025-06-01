@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\SmartWear.props" />
+</Project>
