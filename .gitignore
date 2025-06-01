@@ -1,5 +1,7 @@
 /SmartWear/appsettings.json
 .vs/
-/SmartWear/bin/
-/SmartWear/obj/
+# Ignore bin and obj directories inside SmartWear
+SmartWear/bin/
+SmartWear/obj/
+
 /SmartWear/wwwroot/
