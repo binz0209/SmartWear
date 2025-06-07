@@ -18,6 +18,7 @@
   <ItemGroup>
     <Folder Include="Repositories\Interfaces\" />
     <Folder Include="Services\Interfaces\" />
+    <Folder Include="Views\Admin\" />
   </ItemGroup>
 
   <ItemGroup>

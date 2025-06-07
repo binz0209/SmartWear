@@ -1,0 +1,586 @@
+﻿@{
+    ViewData["Title"] = "Product Details";
+}
+
+<body class="product-details-page">
+
+    <main class="main">
+
+        <!-- Page Title -->
+        <div class="page-title light-background">
+            <div class="container">
+                <nav class="breadcrumbs">
+                    <ol>
+                        <li><a href="index.html">Home</a></li>
+                        <li class="current">Product Details</li>
+                    </ol>
+                </nav>
+                <h1>Product Details</h1>
+            </div>
+        </div><!-- End Page Title -->
+        <!-- Product Details Section -->
+        <section id="product-details" class="product-details section">
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="row g-5">
+                    <!-- Product Images Column -->
+                    <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-right" data-aos-delay="200">
+                        <div class="product-gallery">
+                            <!-- Vertical Thumbnails -->
+                            <div class="thumbnails-vertical">
+                                <div class="thumbnails-container">
+                                    <div class="thumbnail-item active" data-image="~/img/product/product-details-1.webp">
+                                        <img src="~/img/product/product-details-1.webp" alt="Product Thumbnail" class="img-fluid">
+                                    </div>
+                                    <div class="thumbnail-item" data-image="~/img/product/product-details-2.webp">
+                                        <img src="~/img/product/product-details-2.webp" alt="Product Thumbnail" class="img-fluid">
+                                    </div>
+                                    <div class="thumbnail-item" data-image="~/img/product/product-details-3.webp">
+                                        <img src="~/img/product/product-details-3.webp" alt="Product Thumbnail" class="img-fluid">
+                                    </div>
+                                    <div class="thumbnail-item" data-image="~/img/product/product-details-4.webp">
+                                        <img src="~/img/product/product-details-4.webp" alt="Product Thumbnail" class="img-fluid">
+                                    </div>
+                                    <div class="thumbnail-item" data-image="~/img/product/product-details-5.webp">
+                                        <img src="~/img/product/product-details-5.webp" alt="Product Thumbnail" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Main Image -->
+                            <div class="main-image-wrapper">
+                                <div class="image-zoom-container">
+                                    <a href="~/img/product/product-details-1.webp" class="glightbox" data-gallery="product-gallery">
+                                        <img src="~/img/product/product-details-1.webp" alt="Product Image" class="img-fluid main-image drift-zoom" id="main-product-image" data-zoom="~/img/product/product-details-1.webp">
+                                        <div class="zoom-overlay">
+                                            <i class="bi bi-zoom-in"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="image-nav">
+                                    <button class="image-nav-btn prev-image">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button class="image-nav-btn next-image">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Info Column -->
+                    <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+                        <div class="product-info-wrapper" id="product-info-sticky">
+                            <!-- Product Meta -->
+                            <div class="product-meta">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="product-category">Headphones</span>
+                                    <div class="product-share">
+                                        <button class="share-btn" aria-label="Share product">
+                                            <i class="bi bi-share"></i>
+                                        </button>
+                                        <div class="share-dropdown">
+                                            <a href="#" aria-label="Share on Facebook"><i class="bi bi-facebook"></i></a>
+                                            <a href="#" aria-label="Share on Twitter"><i class="bi bi-twitter-x"></i></a>
+                                            <a href="#" aria-label="Share on Pinterest"><i class="bi bi-pinterest"></i></a>
+                                            <a href="#" aria-label="Share via Email"><i class="bi bi-envelope"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h1 class="product-title">Lorem Ipsum Wireless Noise Cancelling Headphones</h1>
+
+                                <div class="product-rating">
+                                    <div class="stars">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-half"></i>
+                                        <span class="rating-value">4.5</span>
+                                    </div>
+                                    <a href="#reviews" class="rating-count">42 Reviews</a>
+                                </div>
+                            </div>
+
+                            <!-- Product Price -->
+                            <div class="product-price-container">
+                                <div class="price-wrapper">
+                                    <span class="current-price">$249.99</span>
+                                    <span class="original-price">$299.99</span>
+                                </div>
+                                <span class="discount-badge">Save 17%</span>
+                                <div class="stock-info">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span>In Stock</span>
+                                    <span class="stock-count">(24 items left)</span>
+                                </div>
+                            </div>
+
+                            <!-- Product Description -->
+                            <div class="product-short-description">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at lacus congue, suscipit elit nec, tincidunt orci. Phasellus egestas nisi vitae lectus imperdiet venenatis.</p>
+                            </div>
+
+                            <!-- Product Options -->
+                            <div class="product-options">
+                                <!-- Color Options -->
+                                <div class="option-group">
+                                    <div class="option-header">
+                                        <h6 class="option-title">Color</h6>
+                                        <span class="selected-option">Black</span>
+                                    </div>
+                                    <div class="color-options">
+                                        <div class="color-option active" data-color="Black" style="background-color: #222;">
+                                            <i class="bi bi-check"></i>
+                                        </div>
+                                        <div class="color-option" data-color="Silver" style="background-color: #C0C0C0;">
+                                            <i class="bi bi-check"></i>
+                                        </div>
+                                        <div class="color-option" data-color="Blue" style="background-color: #1E3A8A;">
+                                            <i class="bi bi-check"></i>
+                                        </div>
+                                        <div class="color-option" data-color="Rose Gold" style="background-color: #B76E79;">
+                                            <i class="bi bi-check"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Size Options -->
+                                <div class="option-group">
+                                    <div class="option-header">
+                                        <h6 class="option-title">Size</h6>
+                                        <span class="selected-option">M</span>
+                                    </div>
+                                    <div class="size-options">
+                                        <div class="size-option" data-size="S">S</div>
+                                        <div class="size-option active" data-size="M">M</div>
+                                        <div class="size-option" data-size="L">L</div>
+                                    </div>
+                                </div>
+
+                                <!-- Quantity Selector -->
+                                <div class="option-group">
+                                    <h6 class="option-title">Quantity</h6>
+                                    <div class="quantity-selector">
+                                        <button class="quantity-btn decrease">
+                                            <i class="bi bi-dash"></i>
+                                        </button>
+                                        <input type="number" class="quantity-input" value="1" min="1" max="24">
+                                        <button class="quantity-btn increase">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="product-actions">
+                                <button class="btn btn-primary add-to-cart-btn">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                                <button class="btn btn-outline-primary buy-now-btn">
+                                    <i class="bi bi-lightning-fill"></i> Buy Now
+                                </button>
+                                <button class="btn btn-outline-secondary wishlist-btn" aria-label="Add to wishlist">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                            </div>
+
+                            <!-- Delivery Options -->
+                            <div class="delivery-options">
+                                <div class="delivery-option">
+                                    <i class="bi bi-truck"></i>
+                                    <div>
+                                        <h6>Free Shipping</h6>
+                                        <p>On orders over $50</p>
+                                    </div>
+                                </div>
+                                <div class="delivery-option">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    <div>
+                                        <h6>30-Day Returns</h6>
+                                        <p>Hassle-free returns</p>
+                                    </div>
+                                </div>
+                                <div class="delivery-option">
+                                    <i class="bi bi-shield-check"></i>
+                                    <div>
+                                        <h6>2-Year Warranty</h6>
+                                        <p>Full coverage</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sticky Add to Cart Bar (appears on scroll) -->
+                <div class="sticky-add-to-cart">
+                    <div class="container">
+                        <div class="sticky-content">
+                            <div class="product-preview">
+                                <img src="~/img/product/product-details-1.webp" alt="Product" class="product-thumbnail">
+                                <div class="product-info">
+                                    <h5 class="product-title">Lorem Ipsum Wireless Headphones</h5>
+                                    <div class="product-price">$249.99</div>
+                                </div>
+                            </div>
+                            <div class="sticky-actions">
+                                <div class="quantity-selector">
+                                    <button class="quantity-btn decrease">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input type="number" class="quantity-input" value="1" min="1" max="24">
+                                    <button class="quantity-btn increase">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-primary add-to-cart-btn">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Details Accordion -->
+                <div class="row mt-5" data-aos="fade-up">
+                    <div class="col-12">
+                        <div class="product-details-accordion">
+                            <!-- Description Accordion -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#description" aria-expanded="true" aria-controls="description">
+                                        Product Description
+                                    </button>
+                                </h2>
+                                <div id="description" class="accordion-collapse collapse show">
+                                    <div class="accordion-body">
+                                        <div class="product-description">
+                                            <h4>Product Overview</h4>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at lacus congue, suscipit elit nec, tincidunt orci. Phasellus egestas nisi vitae lectus imperdiet venenatis. Suspendisse vulputate quam diam, et consectetur augue condimentum in. Aenean dapibus urna eget nisi pharetra, in iaculis nulla blandit. Praesent at consectetur sem, sed sollicitudin nibh. Ut interdum risus ac nulla placerat aliquet.</p>
+
+                                            <div class="row mt-4">
+                                                <div class="col-md-6">
+                                                    <h4>Key Features</h4>
+                                                    <ul class="feature-list">
+                                                        <li><i class="bi bi-check-circle"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit</li>
+                                                        <li><i class="bi bi-check-circle"></i> Vestibulum at lacus congue, suscipit elit nec, tincidunt orci</li>
+                                                        <li><i class="bi bi-check-circle"></i> Phasellus egestas nisi vitae lectus imperdiet venenatis</li>
+                                                        <li><i class="bi bi-check-circle"></i> Suspendisse vulputate quam diam, et consectetur augue</li>
+                                                        <li><i class="bi bi-check-circle"></i> Aenean dapibus urna eget nisi pharetra, in iaculis nulla</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h4>What's in the Box</h4>
+                                                    <ul class="feature-list">
+                                                        <li><i class="bi bi-box"></i> Lorem Ipsum Wireless Headphones</li>
+                                                        <li><i class="bi bi-box"></i> Carrying Case</li>
+                                                        <li><i class="bi bi-box"></i> USB-C Charging Cable</li>
+                                                        <li><i class="bi bi-box"></i> 3.5mm Audio Cable</li>
+                                                        <li><i class="bi bi-box"></i> User Manual</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Specifications Accordion -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#specifications" aria-expanded="false" aria-controls="specifications">
+                                        Technical Specifications
+                                    </button>
+                                </h2>
+                                <div id="specifications" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="product-specifications">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="specs-group">
+                                                        <h4>Technical Specifications</h4>
+                                                        <div class="specs-table">
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Connectivity</div>
+                                                                <div class="specs-value">Bluetooth 5.0, 3.5mm jack</div>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Battery Life</div>
+                                                                <div class="specs-value">Up to 30 hours</div>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Charging Time</div>
+                                                                <div class="specs-value">3 hours</div>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Driver Size</div>
+                                                                <div class="specs-value">40mm</div>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Frequency Response</div>
+                                                                <div class="specs-value">20Hz - 20kHz</div>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Impedance</div>
+                                                                <div class="specs-value">32 Ohm</div>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Weight</div>
+                                                                <div class="specs-value">250g</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="specs-group">
+                                                        <h4>Features</h4>
+                                                        <div class="specs-table">
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Noise Cancellation</div>
+                                                                <div class="specs-value">Active Noise Cancellation (ANC)</div>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Controls</div>
+                                                                <div class="specs-value">Touch controls, Voice assistant</div>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Microphone</div>
+                                                                <div class="specs-value">Dual beamforming microphones</div>
+                                                            </div>
+                                                            <div class="specs-row">
+                                                                <div class="specs-label">Water Resistance</div>
+                                                                <div class="specs-value">IPX4 (splash resistant)</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Reviews Accordion -->
+                            <div class="accordion-item" id="reviews">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reviewsContent" aria-expanded="false" aria-controls="reviewsContent">
+                                        Customer Reviews (42)
+                                    </button>
+                                </h2>
+                                <div id="reviewsContent" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <div class="product-reviews">
+                                            <div class="reviews-summary">
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        <div class="overall-rating">
+                                                            <div class="rating-number">4.5</div>
+                                                            <div class="rating-stars">
+                                                                <i class="bi bi-star-fill"></i>
+                                                                <i class="bi bi-star-fill"></i>
+                                                                <i class="bi bi-star-fill"></i>
+                                                                <i class="bi bi-star-fill"></i>
+                                                                <i class="bi bi-star-half"></i>
+                                                            </div>
+                                                            <div class="rating-count">Based on 42 reviews</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-8">
+                                                        <div class="rating-breakdown">
+                                                            <div class="rating-bar">
+                                                                <div class="rating-label">5 stars</div>
+                                                                <div class="progress">
+                                                                    <div class="progress-bar" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                                <div class="rating-count">27</div>
+                                                            </div>
+                                                            <div class="rating-bar">
+                                                                <div class="rating-label">4 stars</div>
+                                                                <div class="progress">
+                                                                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                                <div class="rating-count">10</div>
+                                                            </div>
+                                                            <div class="rating-bar">
+                                                                <div class="rating-label">3 stars</div>
+                                                                <div class="progress">
+                                                                    <div class="progress-bar" role="progressbar" style="width: 8%;" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                                <div class="rating-count">3</div>
+                                                            </div>
+                                                            <div class="rating-bar">
+                                                                <div class="rating-label">2 stars</div>
+                                                                <div class="progress">
+                                                                    <div class="progress-bar" role="progressbar" style="width: 2%;" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                                <div class="rating-count">1</div>
+                                                            </div>
+                                                            <div class="rating-bar">
+                                                                <div class="rating-label">1 star</div>
+                                                                <div class="progress">
+                                                                    <div class="progress-bar" role="progressbar" style="width: 2%;" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                                <div class="rating-count">1</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="reviews-list">
+                                                <!-- Review Item -->
+                                                <div class="review-item">
+                                                    <div class="review-header">
+                                                        <div class="reviewer-info">
+                                                            <img src="~/img/person/person-m-1.webp" alt="Reviewer" class="reviewer-avatar">
+                                                            <div>
+                                                                <h5 class="reviewer-name">John Doe</h5>
+                                                                <div class="review-date">03/15/2024</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="review-rating">
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                        </div>
+                                                    </div>
+                                                    <h5 class="review-title">Exceptional sound quality and comfort</h5>
+                                                    <div class="review-content">
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at lacus congue, suscipit elit nec, tincidunt orci. Phasellus egestas nisi vitae lectus imperdiet venenatis. Suspendisse vulputate quam diam, et consectetur augue condimentum in.</p>
+                                                    </div>
+                                                </div><!-- End Review Item -->
+                                                <!-- Review Item -->
+                                                <div class="review-item">
+                                                    <div class="review-header">
+                                                        <div class="reviewer-info">
+                                                            <img src="~/img/person/person-f-2.webp" alt="Reviewer" class="reviewer-avatar">
+                                                            <div>
+                                                                <h5 class="reviewer-name">Jane Smith</h5>
+                                                                <div class="review-date">02/28/2024</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="review-rating">
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star"></i>
+                                                        </div>
+                                                    </div>
+                                                    <h5 class="review-title">Great headphones, battery could be better</h5>
+                                                    <div class="review-content">
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at lacus congue, suscipit elit nec, tincidunt orci. Phasellus egestas nisi vitae lectus imperdiet venenatis.</p>
+                                                    </div>
+                                                </div><!-- End Review Item -->
+                                                <!-- Review Item -->
+                                                <div class="review-item">
+                                                    <div class="review-header">
+                                                        <div class="reviewer-info">
+                                                            <img src="~/img/person/person-m-3.webp" alt="Reviewer" class="reviewer-avatar">
+                                                            <div>
+                                                                <h5 class="reviewer-name">Michael Johnson</h5>
+                                                                <div class="review-date">02/15/2024</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="review-rating">
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-half"></i>
+                                                        </div>
+                                                    </div>
+                                                    <h5 class="review-title">Impressive noise cancellation</h5>
+                                                    <div class="review-content">
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at lacus congue, suscipit elit nec, tincidunt orci. Phasellus egestas nisi vitae lectus imperdiet venenatis. Suspendisse vulputate quam diam.</p>
+                                                    </div>
+                                                </div><!-- End Review Item -->
+                                            </div>
+
+                                            <div class="review-form-container mt-5">
+                                                <h4>Write a Review</h4>
+                                                <form class="review-form">
+                                                    <div class="rating-select mb-4">
+                                                        <label class="form-label">Your Rating</label>
+                                                        <div class="star-rating">
+                                                            <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="5 stars"><i class="bi bi-star-fill"></i></label>
+                                                            <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars"><i class="bi bi-star-fill"></i></label>
+                                                            <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 stars"><i class="bi bi-star-fill"></i></label>
+                                                            <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars"><i class="bi bi-star-fill"></i></label>
+                                                            <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star"><i class="bi bi-star-fill"></i></label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row g-3 mb-3">
+                                                        <div class="col-md-6">
+                                                            <label for="review-name" class="form-label">Your Name</label>
+                                                            <input type="text" class="form-control" id="review-name" required="">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="review-email" class="form-label">Your Email</label>
+                                                            <input type="email" class="form-control" id="review-email" required="">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="review-title" class="form-label">Review Title</label>
+                                                        <input type="text" class="form-control" id="review-title" required="">
+                                                    </div>
+
+                                                    <div class="mb-4">
+                                                        <label for="review-content" class="form-label">Your Review</label>
+                                                        <textarea class="form-control" id="review-content" rows="4" required=""></textarea>
+                                                        <div class="form-text">Tell others what you think about this product. Be honest and helpful!</div>
+                                                    </div>
+
+                                                    <div class="loading">Loading</div>
+                                                    <div class="error-message"></div>
+                                                    <div class="sent-message">Your review has been submitted. Thank you!</div>
+
+                                                    <div class="text-end">
+                                                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section><!-- /Product Details Section -->
+
+    </main>
+
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/vendor/php-email-form/validate.js"></script>
+    <script src="~/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="~/vendor/aos/aos.js"></script>
+    <script src="~/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="~/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="~/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="~/vendor/drift-zoom/Drift.min.js"></script>
+    <script src="~/vendor/purecounter/purecounter_vanilla.js"></script>
+
+    <!-- Main JS File -->
+    <script src="~/js/main.js"></script>
+
+</body>
