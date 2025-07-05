@@ -1,27 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartWear.Models
 {
-    public class AuditLog
+    public class AuditLog : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
-        public int UserId { get; set; }
-
+        public Guid UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
 
         [Required, MaxLength(100)]
-        public string Action { get; set; }   // VD: CreateOrder, UpdateProduct, Login, etc.
+        public string Action { get; set; }
 
         [MaxLength(500)]
-        public string Description { get; set; }  // Chi tiết hành động
-
-        [Required]
-        public DateTime Timestamp { get; set; }
+        public string Description { get; set; }
 
         [MaxLength(50)]
         public string IpAddress { get; set; }

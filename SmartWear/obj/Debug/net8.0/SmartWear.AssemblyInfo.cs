@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartWear")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0fc8a23a51d417a50c9b6596e6cb70ee8c24dbb6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+544cf086a1ec91e23df4a68727f766cacad758ca")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartWear")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartWear")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

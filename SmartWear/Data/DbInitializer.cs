@@ -24,19 +24,24 @@ namespace SmartWear.Data
 
             // Seed Admin User
             var adminRole = context.Roles.FirstOrDefault(r => r.Name == "Admin");
+
             if (adminRole != null && !context.Users.Any(u => u.RoleId == adminRole.Id))
             {
                 var adminUser = new User
                 {
                     Username = "admin",
                     Email = "admin@smartwear.com",
-                    Password = "admin123", // Lưu thẳng, không hash
                     RoleId = adminRole.Id
                 };
+
+                // Bắt buộc: Hash mật khẩu
+                var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<User>();
+                adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "admin123");
 
                 context.Users.Add(adminUser);
                 context.SaveChanges();
             }
+
 
             // Seed Categories
             if (!context.Categories.Any())

@@ -1,22 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartWear.Models
 {
-    public class CartItem
+    public class CartItem : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
-        public int CartId { get; set; }
-
+        public Guid CartId { get; set; }
         [ForeignKey("CartId")]
         public Cart Cart { get; set; }
 
         [Required]
-        public int ProductId { get; set; }
-
+        public Guid ProductId { get; set; }
         [ForeignKey("ProductId")]
         public Product Product { get; set; }
 

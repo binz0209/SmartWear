@@ -6,9 +6,7 @@ namespace SmartWear.Data
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
+            : base(options) { }
 
         // DbSets
         public DbSet<User> Users { get; set; }
@@ -29,36 +27,14 @@ namespace SmartWear.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // AuditLog
-            modelBuilder.Entity<AuditLog>(entity =>
-            {
-                entity.Property(al => al.Action)
-                      .HasMaxLength(100)
-                      .IsRequired();
-
-                entity.Property(al => al.Description)
-                      .HasMaxLength(500);
-
-                entity.Property(al => al.Timestamp)
-                      .IsRequired();
-
-                entity.Property(al => al.IpAddress)
-                      .HasMaxLength(50);
-
-                entity.HasOne(al => al.User)
-                      .WithMany()
-                      .HasForeignKey(al => al.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            // Role
+            // ======== Role ========
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasIndex(r => r.Name).IsUnique();
                 entity.Property(r => r.Name).HasMaxLength(50).IsRequired();
             });
 
-            // User
+            // ======== User ========
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasIndex(u => u.Username).IsUnique();
@@ -66,7 +42,7 @@ namespace SmartWear.Data
 
                 entity.Property(u => u.Username).HasMaxLength(100).IsRequired();
                 entity.Property(u => u.Email).HasMaxLength(150).IsRequired();
-                entity.Property(u => u.Password).IsRequired();
+                entity.Property(u => u.PasswordHash).IsRequired();
 
                 entity.HasOne(u => u.Role)
                       .WithMany(r => r.Users)
@@ -99,7 +75,7 @@ namespace SmartWear.Data
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Category
+            // ======== Category ========
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.Property(c => c.Name).HasMaxLength(100).IsRequired();
@@ -109,7 +85,7 @@ namespace SmartWear.Data
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // Product
+            // ======== Product ========
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.Property(p => p.Name).HasMaxLength(150).IsRequired();
@@ -132,7 +108,7 @@ namespace SmartWear.Data
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Order
+            // ======== Order ========
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.Property(o => o.OrderDate).IsRequired();
@@ -159,24 +135,14 @@ namespace SmartWear.Data
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // OrderItem
+            // ======== OrderItem ========
             modelBuilder.Entity<OrderItem>(entity =>
             {
                 entity.Property(oi => oi.Quantity).IsRequired();
                 entity.Property(oi => oi.UnitPrice).HasColumnType("decimal(18,2)").IsRequired();
-
-                entity.HasOne(oi => oi.Order)
-                      .WithMany(o => o.OrderItems)
-                      .HasForeignKey(oi => oi.OrderId)
-                      .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(oi => oi.Product)
-                      .WithMany(p => p.OrderItems)
-                      .HasForeignKey(oi => oi.ProductId)
-                      .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // Cart
+            // ======== Cart ========
             modelBuilder.Entity<Cart>(entity =>
             {
                 entity.HasOne(c => c.User)
@@ -190,79 +156,51 @@ namespace SmartWear.Data
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // CartItem
+            // ======== CartItem ========
             modelBuilder.Entity<CartItem>(entity =>
             {
-                entity.HasKey(ci => ci.Id);
-
                 entity.Property(ci => ci.Quantity).IsRequired();
-
-                entity.HasOne(ci => ci.Cart)
-                      .WithMany(c => c.CartItems)
-                      .HasForeignKey(ci => ci.CartId)
-                      .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(ci => ci.Product)
-                      .WithMany(p => p.CartItems)
-                      .HasForeignKey(ci => ci.ProductId)
-                      .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // ChatLog
+            // ======== ChatLog ========
             modelBuilder.Entity<ChatLog>(entity =>
             {
                 entity.Property(cl => cl.UserQuestion).IsRequired();
                 entity.Property(cl => cl.BotResponse).IsRequired();
-                entity.Property(cl => cl.CreatedAt).HasDefaultValueSql("GETDATE()").IsRequired();
 
-                entity.HasOne(cl => cl.User)
-                      .WithMany(u => u.ChatLogs)
-                      .HasForeignKey(cl => cl.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                // BaseEntity đã có CreatedOn
             });
 
-            // Payment
+            // ======== Payment ========
             modelBuilder.Entity<Payment>(entity =>
             {
                 entity.Property(p => p.PaymentMethod).HasMaxLength(50).IsRequired();
                 entity.Property(p => p.IsPaid).IsRequired();
-
-                entity.HasOne(p => p.Order)
-                      .WithOne(o => o.Payment)
-                      .HasForeignKey<Payment>(p => p.OrderId)
-                      .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // ProductReview
+            // ======== ProductReview ========
             modelBuilder.Entity<ProductReview>(entity =>
             {
                 entity.Property(pr => pr.Rating).IsRequired();
                 entity.Property(pr => pr.Comment);
-                entity.Property(pr => pr.CreatedAt).HasDefaultValueSql("GETDATE()").IsRequired();
-
-                entity.HasOne(pr => pr.Product)
-                      .WithMany(p => p.ProductReviews)
-                      .HasForeignKey(pr => pr.ProductId)
-                      .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(pr => pr.User)
-                      .WithMany(u => u.ProductReviews)
-                      .HasForeignKey(pr => pr.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Address
+            // ======== Address ========
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.Property(a => a.FullName).HasMaxLength(100).IsRequired();
                 entity.Property(a => a.PhoneNumber).HasMaxLength(20).IsRequired();
                 entity.Property(a => a.StreetAddress).HasMaxLength(200).IsRequired();
                 entity.Property(a => a.City).HasMaxLength(100).IsRequired();
+            });
 
-                entity.HasOne(a => a.User)
-                      .WithMany(u => u.Addresses)
-                      .HasForeignKey(a => a.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            // ======== AuditLog ========
+            modelBuilder.Entity<AuditLog>(entity =>
+            {
+                entity.Property(al => al.Action).HasMaxLength(100).IsRequired();
+                entity.Property(al => al.Description).HasMaxLength(500);
+                entity.Property(al => al.IpAddress).HasMaxLength(50);
+                // BaseEntity đã có CreatedOn
             });
         }
     }
