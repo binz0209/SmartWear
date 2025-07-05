@@ -1,13 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartWear.Models
 {
-    public class User
+    public class User : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required, MaxLength(100)]
         public string Username { get; set; }
 
@@ -15,18 +14,17 @@ namespace SmartWear.Models
         public string Email { get; set; }
 
         [Required]
-        public string Password { get; set; }
+        public string PasswordHash { get; set; }
 
         [Required]
-        public int RoleId { get; set; }
-
+        public Guid RoleId { get; set; }
         [ForeignKey("RoleId")]
         public Role Role { get; set; }
 
         public ICollection<Address> Addresses { get; set; }
         public ICollection<Order> Orders { get; set; }
-        public ICollection<ProductReview> ProductReviews { get; set; }
         public Cart Cart { get; set; }
         public ICollection<ChatLog> ChatLogs { get; set; }
+        public ICollection<ProductReview> ProductReviews { get; set; }
     }
 }
