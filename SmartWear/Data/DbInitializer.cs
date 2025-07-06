@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SmartWear.Models;
 
@@ -8,88 +9,97 @@ namespace SmartWear.Data
     {
         public static void Initialize(ApplicationDbContext context)
         {
-            // Tạo database nếu chưa tồn tại
             context.Database.EnsureCreated();
 
-            // Seed Roles
+            // 1️⃣ Seed Roles
             if (!context.Roles.Any())
             {
                 context.Roles.AddRange(
-                    new Role { Name = "Admin" },
-                    new Role { Name = "Customer" },
-                    new Role { Name = "Staff" }
+                    new Role { Id = Guid.NewGuid(), Name = "Admin", CreatedOn = DateTime.UtcNow, IsDeleted = false },
+                    new Role { Id = Guid.NewGuid(), Name = "Customer", CreatedOn = DateTime.UtcNow, IsDeleted = false },
+                    new Role { Id = Guid.NewGuid(), Name = "Staff", CreatedOn = DateTime.UtcNow, IsDeleted = false }
                 );
                 context.SaveChanges();
             }
 
-            // Seed Admin User
+            // 2️⃣ Seed Admin User
             var adminRole = context.Roles.FirstOrDefault(r => r.Name == "Admin");
-
-            if (adminRole != null && !context.Users.Any(u => u.RoleId == adminRole.Id))
+            if (adminRole != null && !context.Users.Any(u => u.Username == "admin"))
             {
                 var adminUser = new User
                 {
+                    Id = Guid.NewGuid(),
                     Username = "admin",
                     Email = "admin@smartwear.com",
-                    RoleId = adminRole.Id
+                    PasswordHash = "admin123", // Plain text
+                    RoleId = adminRole.Id,
+                    CreatedOn = DateTime.UtcNow,
+                    IsDeleted = false
                 };
-
-                // Bắt buộc: Hash mật khẩu
-                var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<User>();
-                adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "admin123");
 
                 context.Users.Add(adminUser);
                 context.SaveChanges();
             }
 
-
-            // Seed Categories
+            // 3️⃣ Seed Categories
             if (!context.Categories.Any())
             {
                 var categories = new List<Category>
                 {
-                    new Category { Name = "Man", Description = "Danh mục quần áo nam" },
-                    new Category { Name = "Women", Description = "Danh mục quần áo nữ" },
-                    new Category { Name = "Kid", Description = "Danh mục quần áo trẻ em" }
+                    new Category { Id = Guid.NewGuid(), Name = "Man", Description = "Quần áo nam", CreatedOn = DateTime.UtcNow, IsDeleted = false },
+                    new Category { Id = Guid.NewGuid(), Name = "Women", Description = "Quần áo nữ", CreatedOn = DateTime.UtcNow, IsDeleted = false },
+                    new Category { Id = Guid.NewGuid(), Name = "Kid", Description = "Quần áo trẻ em", CreatedOn = DateTime.UtcNow, IsDeleted = false }
                 };
 
                 context.Categories.AddRange(categories);
                 context.SaveChanges();
             }
 
-            // Seed Products
+            // 4️⃣ Seed Products
             if (!context.Products.Any())
             {
-                var manCategory = context.Categories.First(c => c.Name == "Man");
-                var womenCategory = context.Categories.First(c => c.Name == "Women");
+                var manCategory = context.Categories.FirstOrDefault(c => c.Name == "Man");
+                var womenCategory = context.Categories.FirstOrDefault(c => c.Name == "Women");
 
-                context.Products.AddRange(
-                    new Product
-                    {
-                        Name = "Classic White T-Shirt",
-                        Description = "Soft cotton t-shirt for everyday wear.",
-                        Price = 19.99m,
-                        StockQuantity = 100,
-                        CategoryId = manCategory.Id
-                    },
-                    new Product
-                    {
-                        Name = "Blue Denim Jeans",
-                        Description = "Comfortable slim-fit jeans.",
-                        Price = 49.99m,
-                        StockQuantity = 50,
-                        CategoryId = manCategory.Id
-                    },
-                    new Product
-                    {
-                        Name = "Red Summer Dress",
-                        Description = "Light and breezy dress for summer days.",
-                        Price = 59.99m,
-                        StockQuantity = 30,
-                        CategoryId = womenCategory.Id
-                    }
-                );
-                context.SaveChanges();
+                if (manCategory != null && womenCategory != null)
+                {
+                    context.Products.AddRange(
+                        new Product
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Classic White T-Shirt",
+                            Description = "Soft cotton t-shirt for everyday wear.",
+                            Price = 19.99m,
+                            StockQuantity = 100,
+                            CategoryId = manCategory.Id,
+                            CreatedOn = DateTime.UtcNow,
+                            IsDeleted = false
+                        },
+                        new Product
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Blue Denim Jeans",
+                            Description = "Comfortable slim-fit jeans.",
+                            Price = 49.99m,
+                            StockQuantity = 50,
+                            CategoryId = manCategory.Id,
+                            CreatedOn = DateTime.UtcNow,
+                            IsDeleted = false
+                        },
+                        new Product
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Red Summer Dress",
+                            Description = "Light and breezy dress for summer days.",
+                            Price = 59.99m,
+                            StockQuantity = 30,
+                            CategoryId = womenCategory.Id,
+                            CreatedOn = DateTime.UtcNow,
+                            IsDeleted = false
+                        }
+                    );
+                    context.SaveChanges();
+                }
             }
         }
     }
