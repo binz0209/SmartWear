@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SmartWear.Data;
-using SmartWear.Models;
+using Business.Data;
+using Business.Models;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 

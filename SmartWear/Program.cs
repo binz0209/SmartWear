@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SmartWear.Data;
+using Business.Data;
 
 namespace SmartWear
 {
