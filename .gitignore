@@ -1,4 +1,4 @@
-/SmartWear/appsettings.json
+/Business/appsettings.json
 .vs/
 # Ignore bin and obj directories inside SmartWear
 SmartWear/bin/
