@@ -1,6 +1,16 @@
+# Ignore appsettings.json files
 /Business/appsettings.json
 /SmartWear/appsettings.json
+
+# Ignore Visual Studio files
 .vs/
-# Ignore bin and obj directories inside SmartWear
+
+# Ignore bin and obj directories inside SmartWear, Business, Repository, and Services
 SmartWear/bin/
 SmartWear/obj/
+Business/bin/
+Business/obj/
+Repository/bin/
+Repository/obj/
+Services/bin/
+Services/obj/
