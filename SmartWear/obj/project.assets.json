@@ -1141,6 +1141,33 @@
         "runtime": {
           "bin/placeholder/Business.dll": {}
         }
+      },
+      "Repositories/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Business": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Repositories.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Repositories.dll": {}
+        }
+      },
+      "Services/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Business": "1.0.0",
+          "Repositories": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Services.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Services.dll": {}
+        }
       }
     }
   },
@@ -3101,11 +3128,23 @@
       "type": "project",
       "path": "../Business/Business.csproj",
       "msbuildProject": "../Business/Business.csproj"
+    },
+    "Repositories/1.0.0": {
+      "type": "project",
+      "path": "../Repositories/Repositories.csproj",
+      "msbuildProject": "../Repositories/Repositories.csproj"
+    },
+    "Services/1.0.0": {
+      "type": "project",
+      "path": "../Services/Services.csproj",
+      "msbuildProject": "../Services/Services.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "Business >= 1.0.0"
+      "Business >= 1.0.0",
+      "Repositories >= 1.0.0",
+      "Services >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -3143,6 +3182,12 @@
           "projectReferences": {
             "D:\\PRN222\\SmartWear\\Business\\Business.csproj": {
               "projectPath": "D:\\PRN222\\SmartWear\\Business\\Business.csproj"
+            },
+            "D:\\PRN222\\SmartWear\\Repositories\\Repositories.csproj": {
+              "projectPath": "D:\\PRN222\\SmartWear\\Repositories\\Repositories.csproj"
+            },
+            "D:\\PRN222\\SmartWear\\Services\\Services.csproj": {
+              "projectPath": "D:\\PRN222\\SmartWear\\Services\\Services.csproj"
             }
           }
         }
