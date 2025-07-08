@@ -47,6 +47,9 @@ namespace SmartWear
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IUserService, UserService>();
 
+            // Gemini DI
+            builder.Services.AddScoped<GeminiClientService>();
+
             var app = builder.Build();
 
             // Initialize DB

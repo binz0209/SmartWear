@@ -48,5 +48,13 @@ namespace Repository
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<IEnumerable<ChatLog>> GetChatLogsByUserIdAsync(Guid userId)
+        {
+            return await _context.ChatLogs
+                .Where(x => x.UserId == userId && !x.IsDeleted)
+                .OrderBy(x => x.CreatedOn)
+                .ToListAsync();
+        }
+
     }
 }

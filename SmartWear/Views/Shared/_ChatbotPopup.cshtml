@@ -1,0 +1,116 @@
+﻿<style>
+    .chat-message {
+        max-width: 80%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 10px;
+        clear: both;
+        word-wrap: break-word;
+    }
+    .chat-message.bot {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        float: left;
+        text-align: left;
+    }
+    .chat-message.user {
+        background-color: #d0ebff;
+        border: 1px solid #66bfff;
+        float: right;
+        text-align: right;
+    }
+    #chat-box::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+</style>
+
+<div id="chatbot-popup" style="position: fixed; bottom: 65px; right: 20px; width: 600px; max-height: 900px; border: 1px solid #ccc; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.3); display: none; flex-direction: column; z-index: 1000;">
+    <div style="background: #007bff; color: white; padding: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+        <span>Chatbot Tư vấn</span>
+        <button onclick="toggleChatbot()" style="background:none;border:none;color:white;font-size:20px;line-height:1;">−</button>
+    </div>
+    <div id="chat-box" style="padding:10px; height:600px; overflow-y:auto; flex-grow:1;"></div>
+    <div style="display: flex; padding: 10px; border-top: 1px solid #ccc;">
+        <input type="text" id="userMessage" placeholder="Nhập câu hỏi..." style="flex: 1; margin-right: 5px;" />
+        <button onclick="sendMessage()">Gửi</button>
+    </div>
+</div>
+
+<button onclick="toggleChatbot()" style="position: fixed; bottom: 65px; right: 20px; z-index: 999;" id="chat-open-btn">💬 Chat</button>
+
+<script>
+    document.addEventListener("keydown", function (event) {
+        const popup = document.getElementById("chatbot-popup");
+        const isVisible = popup.style.display === "flex";
+
+        if (isVisible && event.key === "Escape") {
+            toggleChatbot(); // Đóng chat
+        }
+
+        if (isVisible && event.key === "Enter") {
+            const active = document.activeElement;
+            if (active && active.id === "userMessage") {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+    });
+
+    async function toggleChatbot() {
+        const popup = document.getElementById("chatbot-popup");
+        const openBtn = document.getElementById("chat-open-btn");
+
+        if (popup.style.display === "none") {
+            popup.style.display = "flex";
+            openBtn.style.display = "none";
+
+            // 🔹 Load lịch sử chat
+            const chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML = "";
+
+            try {
+                const response = await fetch('/api/chatbotapi/history');
+                const history = await response.json();
+
+                history.forEach(log => {
+                    chatBox.innerHTML += `<div class="chat-message user"><strong>Bạn:</strong> ${log.question}</div>`;
+                    chatBox.innerHTML += `<div class="chat-message bot"><strong>Chatbot:</strong> ${log.response}</div>`;
+                });
+
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } catch (error) {
+                console.error("Lỗi tải lịch sử:", error);
+            }
+
+        } else {
+            popup.style.display = "none";
+            openBtn.style.display = "block";
+        }
+    }
+
+    async function sendMessage() {
+        const msg = document.getElementById("userMessage").value;
+        if (!msg) return;
+
+        const chatBox = document.getElementById("chat-box");
+        chatBox.innerHTML += `<div class="chat-message user"><strong>Bạn:</strong> ${msg}</div>`;
+
+        const loadingId = "loading-" + Date.now();
+        chatBox.innerHTML += `<div id="${loadingId}" class="chat-message bot"><strong>Chatbot:</strong> <em>...</em></div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        document.getElementById("userMessage").value = "";
+
+        const response = await fetch('/api/chatbotapi/ask?question=' + encodeURIComponent(msg));
+        const data = await response.json();
+
+        const loadingDiv = document.getElementById(loadingId);
+        if (loadingDiv) {
+            loadingDiv.innerHTML = `<strong>Chatbot:</strong><br>${data.reply}`;
+        }
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>

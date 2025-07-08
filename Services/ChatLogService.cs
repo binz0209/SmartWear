@@ -39,5 +39,10 @@ namespace Services
         {
             await _chatLogRepository.DeleteChatLogAsync(id);
         }
+        public async Task<IEnumerable<ChatLog>> GetChatLogsByUserIdAsync(Guid userId)
+        {
+            return await _chatLogRepository.GetChatLogsByUserIdAsync(userId);
+        }
+
     }
 }
