@@ -28,7 +28,6 @@ namespace Services
             return _apiKey;
         }
 
-        // Cập nhật phương thức để lấy sản phẩm từ DB và truyền câu hỏi cho Gemini
         public async Task<string> GetGeminiResponse(string userMessage)
         {
             // Truy vấn các sản phẩm còn hàng
@@ -82,7 +81,6 @@ Người dùng hỏi: {userMessage}
                 dynamic responseData = JsonConvert.DeserializeObject(result);
                 string responseText = responseData.candidates[0].content.parts[0].text;
 
-                // Xử lý chuỗi trả về, giữ lại dấu sao và in đậm các đoạn văn bản trong dấu ** 
                 responseText = ProcessResponseText(responseText);
 
                 return responseText;

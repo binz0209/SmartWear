@@ -1,4 +1,5 @@
 ﻿<style>
+    /* Các style đã có */
     .chat-message {
         max-width: 80%;
         padding: 10px;
@@ -7,38 +8,201 @@
         clear: both;
         word-wrap: break-word;
     }
+
     .chat-message.bot {
         background-color: #f0f0f0;
         border: 1px solid #ccc;
         float: left;
         text-align: left;
     }
+
     .chat-message.user {
         background-color: #d0ebff;
         border: 1px solid #66bfff;
         float: right;
         text-align: right;
     }
+
     #chat-box::after {
         content: "";
         display: block;
         clear: both;
     }
+
+    /* Khung giới thiệu */
+    #chat-intro {
+        position: fixed;
+        bottom: 70px;
+        right: 90px;
+        z-index: 999;
+        background-color: #fff;
+        padding: 10px 20px;
+        border: 2px solid #000;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        text-align: center;
+    }
+
+    #chat-intro span {
+        font-size: 14px;
+        color: #8C0D4F;
+        font-weight: bold;
+    }
+
+    /* Thêm style hover cho nút chatbot */
+    #chat-open-btn {
+        position: fixed;
+        bottom: 65px;
+        right: 20px;
+        z-index: 999;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #fff;
+        border: 2px solid #000;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    #chat-open-btn:hover {
+        background-color: #8C0D4F;
+        transform: scale(1.2);
+    }
+
+    #chat-open-btn img {
+        width: 45px;
+        height: 45px;
+    }
+
+    #chat-open-btn:hover img {
+        filter: brightness(0) invert(1);
+    }
+
+    /* Style cho chatbot */
+    .chatbot-popup {
+        position: fixed;
+        bottom: 65px;
+        right: 20px;
+        width: 600px;
+        max-height: 900px;
+        border: 1px solid #ccc;
+        background-color: #EEDBE5; /* Chỉnh lại màu nền khung chat */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        display: none;
+        flex-direction: column;
+        z-index: 1000;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .chatbot-popup-header {
+        background: #8C0D4F;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .chatbot-popup-button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .chatbox-content {
+        padding: 10px;
+        height: 600px;
+        overflow-y: auto;
+        flex-grow: 1;
+    }
+
+    .chatbox-input {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+    }
+
+    .chatbox-input input {
+        flex: 1;
+        margin-right: 5px;
+        background-color: white;
+        border: 1px solid black;
+        width: 100%;
+        height: 56px;
+        border-radius: 10px;
+        color: black;
+        font-size: 18px;
+        padding-left: 10px;
+    }
+
+    /* Style cho button gửi thay bằng icon */
+    .chatbox-input button {
+        background: none;
+        border: 2px solid #000;
+        border-radius: 50%;
+        padding: 0;
+        cursor: pointer;
+        background-color: #fff;
+        width: 56px; /* Chiều rộng button bằng chiều cao của input */
+        height: 56px; /* Chiều cao button bằng chiều cao của input */
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chatbox-input button:hover {
+        background-color: #8C0D4F;
+        transform: scale(1.1);
+    }
+
+    .chatbox-input button img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .chatbox-input button:hover img {
+        filter: brightness(0) invert(1);
+    }
 </style>
 
-<div id="chatbot-popup" style="position: fixed; bottom: 65px; right: 20px; width: 600px; max-height: 900px; border: 1px solid #ccc; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.3); display: none; flex-direction: column; z-index: 1000;">
-    <div style="background: #007bff; color: white; padding: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+<!-- Chatbot Popup -->
+<div id="chatbot-popup" class="chatbot-popup">
+    <div class="chatbot-popup-header">
         <span>Chatbot Tư vấn</span>
-        <button onclick="toggleChatbot()" style="background:none;border:none;color:white;font-size:20px;line-height:1;">−</button>
+        <button class="chatbot-popup-button" onclick="toggleChatbot()">−</button>
     </div>
-    <div id="chat-box" style="padding:10px; height:600px; overflow-y:auto; flex-grow:1;"></div>
-    <div style="display: flex; padding: 10px; border-top: 1px solid #ccc;">
-        <input type="text" id="userMessage" placeholder="Nhập câu hỏi..." style="flex: 1; margin-right: 5px;" />
-        <button onclick="sendMessage()">Gửi</button>
+    <div id="chat-box" class="chatbox-content"></div>
+    <div class="chatbox-input">
+        <input type="text" id="userMessage" placeholder="Nhập câu hỏi..." />
+        <!-- Thay chữ gửi bằng icon send -->
+        <button onclick="sendMessage()">
+            <img src="~/content/assets/img/chatbot/send.png" alt="Send" />
+        </button>
     </div>
 </div>
 
-<button onclick="toggleChatbot()" style="position: fixed; bottom: 65px; right: 20px; z-index: 999;" id="chat-open-btn">💬 Chat</button>
+<!-- Khung giới thiệu -->
+<div id="chat-intro">
+    <span>Chat with AI</span>
+</div>
+
+<!-- Nút mở -->
+<button onclick="toggleChatbot()" id="chat-open-btn">
+    <img src="~/content/assets/img/chatbot/chatbot.png" alt="Chatbot" style="width: 45px; height: 45px;" />
+</button>
 
 <script>
     document.addEventListener("keydown", function (event) {
@@ -75,8 +239,8 @@
                 const history = await response.json();
 
                 history.forEach(log => {
-                    chatBox.innerHTML += `<div class="chat-message user"><strong>Bạn:</strong> ${log.question}</div>`;
-                    chatBox.innerHTML += `<div class="chat-message bot"><strong>Chatbot:</strong> ${log.response}</div>`;
+                    chatBox.innerHTML += `<div class="chat-message user">${log.question}</div>`;
+                    chatBox.innerHTML += `<div class="chat-message bot">${log.response}</div>`;
                 });
 
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -95,10 +259,10 @@
         if (!msg) return;
 
         const chatBox = document.getElementById("chat-box");
-        chatBox.innerHTML += `<div class="chat-message user"><strong>Bạn:</strong> ${msg}</div>`;
+        chatBox.innerHTML += `<div class="chat-message user">${msg}</div>`;
 
         const loadingId = "loading-" + Date.now();
-        chatBox.innerHTML += `<div id="${loadingId}" class="chat-message bot"><strong>Chatbot:</strong> <em>...</em></div>`;
+        chatBox.innerHTML += `<div id="${loadingId}" class="chat-message bot"><em>...</em></div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
 
         document.getElementById("userMessage").value = "";
@@ -108,9 +272,22 @@
 
         const loadingDiv = document.getElementById(loadingId);
         if (loadingDiv) {
-            loadingDiv.innerHTML = `<strong>Chatbot:</strong><br>${data.reply}`;
+            loadingDiv.innerHTML = `${data.reply}`;
         }
 
         chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Hiển thị khung giới thiệu tự động khi trang được load
+    window.onload = function () {
+        const chatIntro = document.getElementById('chat-intro');
+        chatIntro.style.opacity = 1;
+        chatIntro.style.visibility = 'visible';
+
+        // Tắt khung sau 3 giây
+        setTimeout(function () {
+            chatIntro.style.opacity = 0;
+            chatIntro.style.visibility = 'hidden';
+        }, 3000); // 3 giây
     }
 </script>
