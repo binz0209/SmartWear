@@ -128,9 +128,16 @@
                             </button>
                             <div class="dropdown-menu">
                                 <div class="dropdown-header">
-                                    <h6>Welcome to <span class="sitename">SmartWear</span></h6>
-                                    <p class="mb-0">Access account &amp; manage orders</p>
-                                </div>
+    <h6>Welcome to <span class="sitename">SmartWear</span></h6>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p class="mb-0">@User.Identity.Name</p> <!-- Hiển thị username -->
+    }
+    else
+    {
+        <p class="mb-0">Access account &amp; manage orders</p>
+    }
+</div>
                                 <div class="dropdown-body">
                                     <a class="dropdown-item d-flex align-items-center" asp-area="" asp-controller="Account" asp-action="Account">
                                         <i class="bi bi-person-circle me-2"></i>
@@ -156,10 +163,21 @@
                                         <span>Settings</span>
                                     </a>
                                 </div>
-                                <div class="dropdown-footer">
-                                    <a asp-controller="Account" asp-action="Login" class="btn btn-primary w-100 mb-2">Sign In</a>
-                                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary w-100">Register</a>
-                                </div>
+                                @if (!User.Identity.IsAuthenticated)
+{
+    <div class="dropdown-footer">
+        <a asp-controller="Account" asp-action="Login" class="btn btn-primary w-100 mb-2">Sign In</a>
+        <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary w-100">Register</a>
+    </div>
+}
+else
+{
+    <div class="dropdown-footer">
+        <form asp-controller="Account" asp-action="Logout" method="post">
+            <button type="submit" class="btn btn-outline-danger w-100">Logout</button>
+        </form>
+    </div>
+}
                             </div>
                         </div>
 
