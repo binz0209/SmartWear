@@ -29,10 +29,12 @@
                                 <p>Welcome back! Please enter your details</p>
                             </div>
 
-                            <form>
+                            <form asp-action="LoginPost" method="post">
+                                @Html.AntiForgeryToken()
+
                                 <div class="mb-4">
-                                    <label for="username" class="form-label">User Name</label>
-                                    <input type="text" class="form-control" id="username" placeholder="Enter your username" required="" autocomplete="username">
+                                    <label for="username" class="form-label">Email</label>
+                                    <input type="text" class="form-control" name="username" id="username" placeholder="Enter your email" required autocomplete="username" />
                                 </div>
 
                                 <div class="mb-3">
@@ -40,25 +42,32 @@
                                         <label for="password" class="form-label">Password</label>
                                         <a href="#" class="forgot-link">Forgot password?</a>
                                     </div>
-                                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required="" autocomplete="current-password">
+                                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required autocomplete="current-password" />
                                 </div>
 
                                 <div class="mb-4 form-check">
-                                    <input type="checkbox" class="form-check-input" id="remember">
+                                    <input type="checkbox" class="form-check-input" name="remember" id="remember" />
                                     <label class="form-check-label" for="remember">Remember for 30 days</label>
                                 </div>
 
                                 <div class="d-grid gap-2 mb-4">
                                     <button type="submit" class="btn btn-primary">Sign in</button>
-                                    <button type="button" class="btn btn-outline">
+                                    <a class="btn btn-outline d-block text-center" asp-controller="Account" asp-action="GoogleLogin" asp-route-provider="Google">
                                         <i class="bi bi-google me-2"></i>Sign in with Google
-                                    </button>
+                                    </a>
                                 </div>
 
                                 <div class="signup-link text-center">
                                     <span>Don't have an account?</span>
-                                    <a href="#">Sign up for free</a>
+                                    <a href="/Account/Register">Sign up for free</a>
                                 </div>
+
+                                @if (ViewBag.Error != null)
+                                {
+                                    <div class="alert alert-danger mt-3 text-center">
+                                        @ViewBag.Error
+                                    </div>
+                                }
                             </form>
                         </div>
                     </div>

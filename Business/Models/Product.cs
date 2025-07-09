@@ -26,6 +26,14 @@ namespace Business.Models
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
+        // Thêm Size
+        [MaxLength(50)]
+        public string Size { get; set; }
+
+        // Thêm Color
+        [MaxLength(50)]
+        public string Color { get; set; }
+
         public ICollection<OrderItem> OrderItems { get; set; }
         public ICollection<CartItem> CartItems { get; set; }
         public ICollection<ProductReview> ProductReviews { get; set; }
