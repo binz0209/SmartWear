@@ -47,6 +47,7 @@ namespace SmartWear
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IUserService, UserService>();
 
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = "MyCookieAuth";
@@ -65,7 +66,13 @@ namespace SmartWear
      options.CallbackPath = "/signin-google"; // hoặc đường dẫn bạn đã khai báo trên Google Console
  });
 
-            var app = builder.Build();           
+                
+
+            // Gemini DI
+            builder.Services.AddScoped<GeminiClientService>();
+
+            var app = builder.Build();
+
 
             // Initialize DB
             using (var scope = app.Services.CreateScope())

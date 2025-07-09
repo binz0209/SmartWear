@@ -12,5 +12,7 @@ namespace Services
         Task AddChatLogAsync(ChatLog chatLog);
         Task UpdateChatLogAsync(ChatLog chatLog);
         Task DeleteChatLogAsync(Guid id);
+        Task<IEnumerable<ChatLog>> GetChatLogsByUserIdAsync(Guid userId);
+
     }
 }
