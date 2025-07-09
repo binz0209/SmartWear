@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Business.Data;
 using Repository;
 using Services;
@@ -47,15 +47,39 @@ namespace SmartWear
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IUserService, UserService>();
 
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "MyCookieAuth";
+                options.DefaultChallengeScheme = "Google";
+            })
+ .AddCookie("MyCookieAuth", options =>
+ {
+     options.LoginPath = "/Account/Login";
+     options.AccessDeniedPath = "/Account/AccessDenied";
+     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+ })
+ .AddGoogle("Google", options =>
+ {
+     options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+     options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+     options.CallbackPath = "/signin-google"; // hoặc đường dẫn bạn đã khai báo trên Google Console
+ });
+
+                
+
             // Gemini DI
             builder.Services.AddScoped<GeminiClientService>();
 
             var app = builder.Build();
 
+
             // Initialize DB
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                Console.WriteLine(" ConnectionString: " + builder.Configuration.GetConnectionString("DefaultConnection"));
+
                 DbInitializer.Initialize(context);
             }
 
@@ -71,6 +95,7 @@ namespace SmartWear
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
