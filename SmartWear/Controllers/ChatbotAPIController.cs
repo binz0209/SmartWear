@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SmartWear.Controllers
@@ -30,10 +31,15 @@ namespace SmartWear.Controllers
 
 
             // Tạo đối tượng ChatLog
+            var userIdClaims = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            // Nếu null thì không lưu trong cơ sở dữ liệu
+            if (userIdClaims == null)
+                return Ok(new { reply = response });
+
             var chatLog = new ChatLog
             {
                 Id = Guid.NewGuid(),
-                UserId = Guid.Parse("B179C919-553A-4598-9210-7B960FB31FE7"),
+                UserId = Guid.Parse(userIdClaims.Value),
                 UserQuestion = question,
                 BotResponse = response,
                 CreatedOn = DateTime.Now
@@ -53,7 +59,16 @@ namespace SmartWear.Controllers
         [HttpGet("history")]
         public async Task<IActionResult> GetChatHistory()
         {
-            var userId = Guid.Parse("B179C919-553A-4598-9210-7B960FB31FE7");
+            // get currently logged-in user ID from claims
+            var userIdClaims = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdClaims?.Value))
+                return Unauthorized("Bạn cần đăng nhập để xem lịch sử trò chuyện.");
+
+            var userId = Guid.Parse(userIdClaims.Value);
+
+            // Console print
+            Console.WriteLine("User ID: " + userId);
 
             var chatLogs = await _chatLogService.GetChatLogsByUserIdAsync(userId);
 
