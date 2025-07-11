@@ -77,7 +77,7 @@ namespace Business.Data
 
             // ======== Category ========
             modelBuilder.Entity<Category>(entity =>
-            {
+     {
                 entity.Property(c => c.Name).HasMaxLength(100).IsRequired();
                 entity.HasMany(c => c.Products)
                       .WithOne(p => p.Category)

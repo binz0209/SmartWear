@@ -12,5 +12,6 @@ namespace Repository
         Task AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(Guid id);
+        Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(Guid categoryId);
     }
 }

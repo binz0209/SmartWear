@@ -48,5 +48,11 @@ namespace Repository
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(Guid categoryId)
+        {
+            return await _context.Products
+                .Where(p => p.CategoryId == categoryId)
+                .ToListAsync();
+        }
     }
 }

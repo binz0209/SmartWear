@@ -1,25 +1,61 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Services;
 using SmartWear.Models;
+using SmartWear.ViewModels;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace SmartWear.Controllers
+public class ProductController : Controller
 {
-    public class ProductController : Controller
+    private readonly ILogger<ProductController> _logger;
+    private readonly ICategoryService _categoryService;
+    private readonly IProductService _productService;
+
+    public ProductController(ILogger<ProductController> logger, ICategoryService categoryService, IProductService productService)
     {
-        private readonly ILogger<ProductController> _logger;
+        _logger = logger;
+        _categoryService = categoryService;
+        _productService = productService;
+    }
 
-        public ProductController(ILogger<ProductController> logger)
+    public async Task<IActionResult> Category(Guid? categoryId)
+    {
+        var categories = await _categoryService.GetAllCategoriesAsync();
+        var products = await _productService.GetAllProductsAsync();
+        if (categoryId.HasValue)
         {
-            _logger = logger;
+            products = products.Where(p => p.CategoryId == categoryId.Value).ToList();
         }
-        public IActionResult SearchResults() => View();
-        public IActionResult Category(string categoryName) => View();
-        public IActionResult ProductDetails(int id) => View();
+        var categoryViewModels = categories.Select(category => new CategoryProductViewModel
+        {
+            Id = category.Id,
+            Name = category.Name,
+            Products = products
+                .Where(p => p.CategoryId == category.Id)  
+                .Select(p => new ProductViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    ImageUrl = p.ImageUrl
+                }).ToList()
+        }).ToList();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        bool hasProducts = categoryViewModels.Any(c => c.Products.Any());
+
+        //No products
+        ViewBag.NoProducts = hasProducts ? null : "There are no products available for this category.";
+
+        return View(categoryViewModels);  
+    }
+
+    public IActionResult SearchResults() => View();
+
+    public IActionResult ProductDetails(int id) => View();
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

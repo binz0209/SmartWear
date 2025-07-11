@@ -72,6 +72,8 @@ namespace Business.Data
                             Price = 19.99m,
                             StockQuantity = 100,
                             CategoryId = manCategory.Id,
+                            Color = "White",
+                            Size = "M",
                             CreatedOn = DateTime.UtcNow,
                             IsDeleted = false
                         },
@@ -83,6 +85,8 @@ namespace Business.Data
                             Price = 49.99m,
                             StockQuantity = 50,
                             CategoryId = manCategory.Id,
+                            Color = "Blue",
+                            Size = "L",
                             CreatedOn = DateTime.UtcNow,
                             IsDeleted = false
                         },
@@ -94,6 +98,8 @@ namespace Business.Data
                             Price = 59.99m,
                             StockQuantity = 30,
                             CategoryId = womenCategory.Id,
+                            Color = "Red",
+                            Size = "S",
                             CreatedOn = DateTime.UtcNow,
                             IsDeleted = false
                         }

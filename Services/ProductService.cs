@@ -3,6 +3,7 @@ using Business.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Services
 {
@@ -39,5 +40,10 @@ namespace Services
         {
             await _productRepository.DeleteProductAsync(id);
         }
+        public async Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(Guid categoryId)
+        {
+            return await _productRepository.GetProductsByCategoryIdAsync(categoryId);
+        }
+
     }
 }
