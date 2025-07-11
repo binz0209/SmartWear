@@ -31,7 +31,7 @@ namespace Business.Data
                     Id = Guid.NewGuid(),
                     Username = "admin",
                     Email = "admin@smartwear.com",
-                    PasswordHash = "admin123", // Plain text
+                    PasswordHash = "admin123", // Plain text, you should hash it for real use
                     RoleId = adminRole.Id,
                     CreatedOn = DateTime.UtcNow,
                     IsDeleted = false
@@ -98,6 +98,141 @@ namespace Business.Data
                             IsDeleted = false
                         }
                     );
+
+                    context.SaveChanges();
+                }
+            }
+
+            // 5️⃣ Seed Orders
+            if (!context.Orders.Any())
+            {
+                var adminUserId = context.Users.FirstOrDefault(u => u.Username == "admin")?.Id;
+                var addressId = context.Addresses.FirstOrDefault(a => a.UserId == adminUserId)?.Id;
+
+                if (adminUserId != null && addressId != null)
+                {
+                    var order = new Order
+                    {
+                        Id = Guid.NewGuid(),
+                        OrderDate = DateTime.UtcNow,
+                        Status = "Pending",
+                        UserId = adminUserId.Value,
+                        AddressId = addressId.Value,
+                        CreatedOn = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+                    context.Orders.Add(order);
+                    context.SaveChanges();
+                }
+            }
+
+            // 6️⃣ Seed OrderItems
+            if (!context.OrderItems.Any())
+            {
+                var orderId = context.Orders.FirstOrDefault()?.Id;
+                var productId = context.Products.FirstOrDefault()?.Id;
+
+                if (orderId != null && productId != null)
+                {
+                    var orderItem = new OrderItem
+                    {
+                        Id = Guid.NewGuid(),
+                        Quantity = 2,
+                        UnitPrice = 19.99m,
+                        OrderId = orderId.Value,
+                        ProductId = productId.Value,
+                        CreatedOn = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+                    context.OrderItems.Add(orderItem);
+                    context.SaveChanges();
+                }
+            }
+
+            // 7️⃣ Seed Payments
+            if (!context.Payments.Any())
+            {
+                var orderId = context.Orders.FirstOrDefault()?.Id;
+
+                if (orderId != null)
+                {
+                    var payment = new Payment
+                    {
+                        Id = Guid.NewGuid(),
+                        OrderId = orderId.Value,
+                        PaymentMethod = "Credit Card",
+                        IsPaid = true,
+                        PaymentDate = DateTime.UtcNow,
+                        CreatedOn = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+                    context.Payments.Add(payment);
+                    context.SaveChanges();
+                }
+            }
+
+            // 8️⃣ Seed CartItems
+            if (!context.CartItems.Any())
+            {
+                var cartId = context.Carts.FirstOrDefault()?.Id;
+                var productId = context.Products.FirstOrDefault()?.Id;
+
+                if (cartId != null && productId != null)
+                {
+                    var cartItem = new CartItem
+                    {
+                        Id = Guid.NewGuid(),
+                        CartId = cartId.Value,
+                        ProductId = productId.Value,
+                        Quantity = 1,
+                        CreatedOn = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+                    context.CartItems.Add(cartItem);
+                    context.SaveChanges();
+                }
+            }
+
+            // 9️⃣ Seed ChatLogs
+            if (!context.ChatLogs.Any())
+            {
+                var userId = context.Users.FirstOrDefault()?.Id;
+
+                if (userId != null)
+                {
+                    var chatLog = new ChatLog
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = userId.Value,
+                        UserQuestion = "What is my order status?",
+                        BotResponse = "Your order is pending.",
+                        CreatedOn = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+                    context.ChatLogs.Add(chatLog);
+                    context.SaveChanges();
+                }
+            }
+
+            // 🔟 Seed ProductReviews
+            if (!context.ProductReviews.Any())
+            {
+                var productId = context.Products.FirstOrDefault()?.Id;
+                var userId = context.Users.FirstOrDefault()?.Id;
+
+                if (productId != null && userId != null)
+                {
+                    var productReview = new ProductReview
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductId = productId.Value,
+                        UserId = userId.Value,
+                        Rating = 5,
+                        Comment = "Great product!",
+                        CreatedOn = DateTime.UtcNow,
+                        IsDeleted = false
+                    };
+                    context.ProductReviews.Add(productReview);
                     context.SaveChanges();
                 }
             }

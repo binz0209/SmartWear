@@ -842,28 +842,17 @@
     }
 
     // Phone number input mask
-    const phoneInput = document.getElementById('phone');
+    const phoneInput = document.getElementById('phone-number');
     if (phoneInput) {
-      phoneInput.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 10) value = value.slice(0, 10);
-
-        // Format as (XXX) XXX-XXXX
-        if (value.length > 0) {
-          if (value.length <= 3) {
-            value = '(' + value;
-          } else if (value.length <= 6) {
-            value = '(' + value.slice(0, 3) + ') ' + value.slice(3);
-          } else {
-            value = '(' + value.slice(0, 3) + ') ' + value.slice(3, 6) + '-' + value.slice(6);
-          }
-        }
-
-        e.target.value = value;
-      });
+        phoneInput.addEventListener('input', function (e) {
+            // Chỉ giữ lại các ký tự số
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) value = value.slice(0, 10);
+            e.target.value = value;
+        });
     }
 
-    // ZIP code input mask (5 digits)
+      // ZIP code input mask (5 digits)
     const zipInput = document.getElementById('zip');
     if (zipInput) {
       zipInput.addEventListener('input', function(e) {

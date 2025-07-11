@@ -3,6 +3,7 @@ using Business.Data;
 using Repository;
 using Services;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Services.VnPay;
 
 namespace SmartWear
 {
@@ -68,6 +69,9 @@ namespace SmartWear
                  options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
                  options.CallbackPath = "/signin-google"; // hoặc đường dẫn bạn đã khai báo trên Google Console
              });
+
+            // VNpayService DI
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
 
             var app = builder.Build();
 
