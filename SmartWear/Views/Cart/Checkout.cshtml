@@ -183,9 +183,14 @@
 
                                     <!-- HIDDEN INPUTS BẮT BUỘC -->
                                     <input type="hidden" name="Name" id="hidden-full-name" />
+                                    <input type="hidden" name="PhoneNumber" id="hidden-phone" />
+                                    <input type="hidden" name="Email" id="hidden-email" />
+                                    <input type="hidden" name="StreetAddress" id="hidden-address" />
+                                    <input type="hidden" name="City" id="hidden-city" />
                                     <input type="hidden" name="Amount" id="hidden-amount" />
                                     <input type="hidden" name="OrderDescription" value="Thanh toan don hang SmartWear" />
                                     <input type="hidden" name="OrderType" id="hidden-order-type" />
+
 
                                     <div class="form-check mt-4">
                                         <input class="form-check-input" type="checkbox" id="terms" name="terms" required="" />
@@ -392,13 +397,23 @@
         function beforeSubmitForm() {
             const fullNameRaw = document.getElementById('full-name').value.trim();
             const fullName = removeVietnameseTones(fullNameRaw);
+            const phone = document.getElementById('phone-number').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const address = document.getElementById('street-address').value.trim();
+            const city = document.getElementById('city').value.trim();
             const amountText = document.querySelector('.order-total span:last-child').innerText.replace(/\D/g, '');
             const amount = parseInt(amountText);
             const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
 
+            // Gán vào các input ẩn
             document.getElementById('hidden-full-name').value = fullName;
+            document.getElementById('hidden-phone').value = phone;
+            document.getElementById('hidden-email').value = email;
+            document.getElementById('hidden-address').value = address;
+            document.getElementById('hidden-city').value = city;
             document.getElementById('hidden-amount').value = amount;
             document.getElementById('hidden-order-type').value = paymentMethod === 'VNPay' ? 'other' : 'cod';
+
 
             const form = document.getElementById('checkout-form');
             if (paymentMethod === 'VNPay') {
@@ -409,6 +424,7 @@
 
             return true;
         }
+
         function removeVietnameseTones(str) {
             str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
             str = str.replace(/đ/g, 'd').replace(/Đ/g, 'D');

@@ -24,8 +24,14 @@ namespace Repository
 
         public async Task<Order> GetOrderByIdAsync(Guid id)
         {
-            return await _context.Orders.FindAsync(id);
+            return await _context.Orders
+                .Include(o => o.OrderItems)            // Bao gồm OrderItems
+                    .ThenInclude(oi => oi.Product)      // Bao gồm thông tin Product trong OrderItem
+                .Include(o => o.Payment)               // Bao gồm Payment
+                .Include(o => o.Address)               // Bao gồm Address
+                .FirstOrDefaultAsync(o => o.Id == id); // Lấy Order theo ID
         }
+
 
         public async Task AddOrderAsync(Order order)
         {

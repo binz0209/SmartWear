@@ -63,5 +63,18 @@ namespace Repository
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task ClearCartAsync(Guid cartId)
+        {
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.Id == cartId);
+
+            if (cart != null)
+            {
+                _context.CartItems.RemoveRange(cart.CartItems);
+                await _context.SaveChangesAsync();
+            }
+        }
+
     }
 }

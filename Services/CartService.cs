@@ -48,5 +48,10 @@ namespace Services
         {
             await _cartRepository.DeleteCartAsync(id);
         }
+        public async Task ClearCartAsync(Guid cartId)
+        {
+            await _cartRepository.ClearCartAsync(cartId);
+        }
+
     }
 }

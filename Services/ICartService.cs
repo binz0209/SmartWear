@@ -14,5 +14,6 @@ namespace Services
         Task AddCartAsync(Cart cart);
         Task UpdateCartAsync(Cart cart);
         Task DeleteCartAsync(Guid id);
+        Task ClearCartAsync(Guid cartId);
     }
 }
