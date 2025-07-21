@@ -1,4 +1,5 @@
-﻿@{
+﻿@model SmartWear.ViewModels.ProductDetailsViewModel
+@{
     ViewData["Title"] = "Product Details";
 }
 
@@ -30,29 +31,33 @@
                             <!-- Vertical Thumbnails -->
                             <div class="thumbnails-vertical">
                                 <div class="thumbnails-container">
-                                    <div class="thumbnail-item active" data-image="~/img/product/product-details-1.webp">
-                                        <img src="~/img/product/product-details-1.webp" alt="Product Thumbnail" class="img-fluid">
-                                    </div>
-                                    <div class="thumbnail-item" data-image="~/img/product/product-details-2.webp">
-                                        <img src="~/img/product/product-details-2.webp" alt="Product Thumbnail" class="img-fluid">
-                                    </div>
-                                    <div class="thumbnail-item" data-image="~/img/product/product-details-3.webp">
-                                        <img src="~/img/product/product-details-3.webp" alt="Product Thumbnail" class="img-fluid">
-                                    </div>
-                                    <div class="thumbnail-item" data-image="~/img/product/product-details-4.webp">
-                                        <img src="~/img/product/product-details-4.webp" alt="Product Thumbnail" class="img-fluid">
-                                    </div>
-                                    <div class="thumbnail-item" data-image="~/img/product/product-details-5.webp">
-                                        <img src="~/img/product/product-details-5.webp" alt="Product Thumbnail" class="img-fluid">
-                                    </div>
+                                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                    {
+                                        var images = Model.ImageUrl.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                        var isFirst = true;
+                                        foreach (var img in images)
+                                        {
+                                            <div class="thumbnail-item @(isFirst ? "active" : "")" data-image="~/img/product/@img.Trim()">
+                                                <img src="~/img/product/@img.Trim()" alt="Product Thumbnail" class="img-fluid">
+                                            </div>
+                                            isFirst = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="thumbnail-item active" data-image="~/img/product/default-product.webp">
+                                            <img src="~/img/product/default-product.webp" alt="Product Thumbnail" class="img-fluid">
+                                        </div>
+                                    }
                                 </div>
                             </div>
+
 
                             <!-- Main Image -->
                             <div class="main-image-wrapper">
                                 <div class="image-zoom-container">
-                                    <a href="~/img/product/product-details-1.webp" class="glightbox" data-gallery="product-gallery">
-                                        <img src="~/img/product/product-details-1.webp" alt="Product Image" class="img-fluid main-image drift-zoom" id="main-product-image" data-zoom="~/img/product/product-details-1.webp">
+                                    <a href="~/img/product/@Model.ImageUrl" class="glightbox" data-gallery="product-gallery">
+                                        <img src="~/img/product/@Model.ImageUrl" alt="@Model.Name" class="img-fluid main-image drift-zoom" id="main-product-image" data-zoom="~/img/product/@Model.ImageUrl">
                                         <div class="zoom-overlay">
                                             <i class="bi bi-zoom-in"></i>
                                         </div>
@@ -76,7 +81,7 @@
                             <!-- Product Meta -->
                             <div class="product-meta">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="product-category">Headphones</span>
+                                    <span class="product-category">@(Model.CategoryName ?? "Uncategorized")</span>
                                     <div class="product-share">
                                         <button class="share-btn" aria-label="Share product">
                                             <i class="bi bi-share"></i>
@@ -90,76 +95,89 @@
                                     </div>
                                 </div>
 
-                                <h1 class="product-title">Lorem Ipsum Wireless Noise Cancelling Headphones</h1>
+                                <h1 class="product-title">@(Model.Name)</h1>
 
                                 <div class="product-rating">
                                     <div class="stars">
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-half"></i>
-                                        <span class="rating-value">4.5</span>
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= Math.Floor(Model.Rating))
+                                            {
+                                                <i class="bi bi-star-fill"></i>
+                                            }
+                                            else if (i - Model.Rating <= 0.5)
+                                            {
+                                                <i class="bi bi-star-half"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-star"></i>
+                                            }
+                                        }
+                                        <span class="rating-value">@Model.Rating</span>
                                     </div>
-                                    <a href="#reviews" class="rating-count">42 Reviews</a>
+                                    <a href="#reviews" class="rating-count">@Model.ReviewCount Reviews</a>
                                 </div>
-                            </div>
+
 
                             <!-- Product Price -->
-                            <div class="product-price-container">
-                                <div class="price-wrapper">
-                                    <span class="current-price">$249.99</span>
-                                    <span class="original-price">$299.99</span>
+                                <div class="product-price-container">
+                                    <div class="price-wrapper">
+                                        <span class="current-price">@Model.Price.ToString("C")</span>
+                                    </div>
+
+                                    @if (Model.StockQuantity > 0)
+                                    {
+                                        <div class="stock-info">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>In Stock</span>
+                                            <span class="stock-count">(@Model.StockQuantity items left)</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="stock-info text-danger">
+                                            <span>Out of Stock</span>
+                                        </div>
+                                    }
                                 </div>
-                                <span class="discount-badge">Save 17%</span>
-                                <div class="stock-info">
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    <span>In Stock</span>
-                                    <span class="stock-count">(24 items left)</span>
-                                </div>
-                            </div>
+
 
                             <!-- Product Description -->
-                            <div class="product-short-description">
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at lacus congue, suscipit elit nec, tincidunt orci. Phasellus egestas nisi vitae lectus imperdiet venenatis.</p>
-                            </div>
+                                <div class="product-short-description">
+                                    <p>@(!string.IsNullOrEmpty(Model.Description) ? Model.Description : "No description available.")</p>
+                                </div>
+
 
                             <!-- Product Options -->
                             <div class="product-options">
                                 <!-- Color Options -->
-                                <div class="option-group">
-                                    <div class="option-header">
-                                        <h6 class="option-title">Color</h6>
-                                        <span class="selected-option">Black</span>
-                                    </div>
-                                    <div class="color-options">
-                                        <div class="color-option active" data-color="Black" style="background-color: #222;">
-                                            <i class="bi bi-check"></i>
+                                    <div class="option-group">
+                                        <div class="option-header">
+                                            <h6 class="option-title">Color</h6>
+                                            <span class="selected-option">@(!string.IsNullOrEmpty(Model.Color) ? Model.Color : "Default")</span>
                                         </div>
-                                        <div class="color-option" data-color="Silver" style="background-color: #C0C0C0;">
-                                            <i class="bi bi-check"></i>
-                                        </div>
-                                        <div class="color-option" data-color="Blue" style="background-color: #1E3A8A;">
-                                            <i class="bi bi-check"></i>
-                                        </div>
-                                        <div class="color-option" data-color="Rose Gold" style="background-color: #B76E79;">
-                                            <i class="bi bi-check"></i>
+                                        <div class="color-options">
+                                            <div class="color-option active" data-color="@Model.Color"
+                                                 style="background-color: @Model.Color; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:12px;">
+                                                <i class="bi bi-check"></i>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+
 
                                 <!-- Size Options -->
-                                <div class="option-group">
-                                    <div class="option-header">
-                                        <h6 class="option-title">Size</h6>
-                                        <span class="selected-option">M</span>
+                                    <div class="option-group">
+                                        <div class="option-header">
+                                            <h6 class="option-title">Size</h6>
+                                            <span class="selected-option">@Model.Size</span>
+                                        </div>
+                                        <div class="size-options">
+                                            <div class="size-option @(Model.Size == "S" ? "active" : "")" data-size="S">S</div>
+                                            <div class="size-option @(Model.Size == "M" ? "active" : "")" data-size="M">M</div>
+                                            <div class="size-option @(Model.Size == "L" ? "active" : "")" data-size="L">L</div>
+                                        </div>
                                     </div>
-                                    <div class="size-options">
-                                        <div class="size-option" data-size="S">S</div>
-                                        <div class="size-option active" data-size="M">M</div>
-                                        <div class="size-option" data-size="L">L</div>
-                                    </div>
-                                </div>
 
                                 <!-- Quantity Selector -->
                                 <div class="option-group">
@@ -582,5 +600,7 @@
 
     <!-- Main JS File -->
     <script src="~/js/main.js"></script>
-
+    <script>
+        GLightbox({ selector: '.glightbox' });
+    </script>
 </body>

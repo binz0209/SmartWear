@@ -48,5 +48,35 @@ namespace Repository
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<bool> CreateOrderAndUpdateStockAsync(Order order)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                foreach (var item in order.OrderItems)
+                {
+                    var product = await _context.Products.FindAsync(item.ProductId);
+                    if (product == null || product.StockQuantity < item.Quantity)
+                    {
+                        throw new InvalidOperationException($"Not enough stock for product {item.ProductId}");
+                    }
+
+                    product.StockQuantity -= item.Quantity;
+                    _context.Products.Update(product);
+                }
+
+                await _context.Orders.AddAsync(order);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
     }
 }

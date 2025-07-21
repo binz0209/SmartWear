@@ -39,5 +39,11 @@ namespace Services
         {
             await _productRepository.DeleteProductAsync(id);
         }
+
+        public async Task<IEnumerable<Product>> SearchProductsAsync(string keyword)
+        {
+            return await _productRepository.SearchProductsAsync(keyword);
+        }
+
     }
 }

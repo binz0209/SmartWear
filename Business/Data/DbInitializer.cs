@@ -73,7 +73,9 @@ namespace Business.Data
                             StockQuantity = 100,
                             CategoryId = manCategory.Id,
                             CreatedOn = DateTime.UtcNow,
-                            IsDeleted = false
+                            IsDeleted = false,
+                            Color = "White",
+                            Size = "M"
                         },
                         new Product
                         {
@@ -84,7 +86,9 @@ namespace Business.Data
                             StockQuantity = 50,
                             CategoryId = manCategory.Id,
                             CreatedOn = DateTime.UtcNow,
-                            IsDeleted = false
+                            IsDeleted = false,
+                            Color = "Blue",
+                            Size = "S"
                         },
                         new Product
                         {
@@ -95,7 +99,9 @@ namespace Business.Data
                             StockQuantity = 30,
                             CategoryId = womenCategory.Id,
                             CreatedOn = DateTime.UtcNow,
-                            IsDeleted = false
+                            IsDeleted = false,
+                            Color = "Red",
+                            Size = "L"
                         }
                     );
                     context.SaveChanges();
