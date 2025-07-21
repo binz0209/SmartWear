@@ -1,4 +1,6 @@
-﻿<body class="account-page">
+﻿@model SmartWear.ViewModels.UserProfileViewModel
+
+<body class="account-page">
 
     <main class="main">
 
@@ -34,11 +36,8 @@
                                 <span>S</span>
                             </div>
                             <div class="profile-info">
-                                <h4>Sarah Anderson</h4>
-                                <div class="profile-bonus">
-                                    <i class="bi bi-gift"></i>
-                                    <span>100 bonuses available</span>
-                                </div>
+                                <h4>@Model.Username</h4>
+                                
                             </div>
                         </div>
 
@@ -81,12 +80,7 @@
                                         <span>Addresses</span>
                                     </button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab" aria-controls="notifications" aria-selected="false">
-                                        <i class="bi bi-bell"></i>
-                                        <span>Notifications</span>
-                                    </button>
-                                </li>
+                                
                             </ul>
 
                             <h6 class="nav-section-title">Customer service</h6>
@@ -104,10 +98,12 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link logout">
-                                        <i class="bi bi-box-arrow-right"></i>
-                                        <span>Log out</span>
-                                    </a>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="w-100">
+                                        <button type="submit" class="nav-link logout btn btn-link p-0 m-0 w-100 text-start">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                            <span>Log out</span>
+                                        </button>
+                                    </form>
                                 </li>
                             </ul>
                         </div>
@@ -885,61 +881,7 @@
                                         </div><!-- End Wishlist Item -->
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Payment Methods Tab -->
-                            <div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="payment-tab">
-                                <div class="tab-header">
-                                    <h2>Payment Methods</h2>
-                                    <button class="btn btn-add-payment" type="button">
-                                        <i class="bi bi-plus-lg"></i> Add payment method
-                                    </button>
-                                </div>
-                                <div class="payment-methods">
-                                    <!-- Payment Method 1 -->
-                                    <div class="payment-method-item" data-aos="fade-up" data-aos-delay="100">
-                                        <div class="payment-card">
-                                            <div class="card-type">
-                                                <i class="bi bi-credit-card"></i>
-                                            </div>
-                                            <div class="card-info">
-                                                <div class="card-number">**** **** **** 4589</div>
-                                                <div class="card-expiry">Expires 09/2026</div>
-                                            </div>
-                                            <div class="card-actions">
-                                                <button class="btn-edit-card" type="button">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="btn-delete-card" type="button">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="default-badge">Default</div>
-                                    </div><!-- End Payment Method -->
-                                    <!-- Payment Method 2 -->
-                                    <div class="payment-method-item" data-aos="fade-up" data-aos-delay="200">
-                                        <div class="payment-card">
-                                            <div class="card-type">
-                                                <i class="bi bi-credit-card"></i>
-                                            </div>
-                                            <div class="card-info">
-                                                <div class="card-number">**** **** **** 7821</div>
-                                                <div class="card-expiry">Expires 05/2025</div>
-                                            </div>
-                                            <div class="card-actions">
-                                                <button class="btn-edit-card" type="button">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="btn-delete-card" type="button">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-sm btn-make-default" type="button">Make default</button>
-                                    </div><!-- End Payment Method -->
-                                </div>
-                            </div>
+                            </div>                            
 
                             <!-- Reviews Tab -->
                             <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
@@ -1008,49 +950,20 @@
                                     <h2>Personal Information</h2>
                                 </div>
                                 <div class="personal-info-form" data-aos="fade-up" data-aos-delay="100">
-                                    <form class="php-email-form">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="firstName" class="form-label">First Name</label>
-                                                <input type="text" class="form-control" id="firstName" name="firstName" value="Lorem" required="">
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="lastName" class="form-label">Last Name</label>
-                                                <input type="text" class="form-control" id="lastName" name="lastName" value="Ipsum" required="">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="email" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="email" name="email" value="lorem@example.com" required="">
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="phone" class="form-label">Phone</label>
-                                                <input type="tel" class="form-control" id="phone" name="phone" value="+1 (555) 123-4567">
-                                            </div>
-                                        </div>
+                                    <form asp-action="UpdateProfile" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="Id" value="@Model.Id" />
+
                                         <div class="mb-3">
-                                            <label for="birthdate" class="form-label">Date of Birth</label>
-                                            <input type="date" class="form-control" id="birthdate" name="birthdate" value="1990-01-01">
+                                            <label for="username" class="form-label">Username</label>
+                                            <input type="text" class="form-control" id="username" name="Username" value="@Model.Username">
                                         </div>
+
                                         <div class="mb-3">
-                                            <label class="form-label d-block">Gender</label>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="gender" id="genderMale" value="male" checked="">
-                                                <label class="form-check-label" for="genderMale">Male</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="female">
-                                                <label class="form-check-label" for="genderFemale">Female</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="gender" id="genderOther" value="other">
-                                                <label class="form-check-label" for="genderOther">Other</label>
-                                            </div>
-                                        </div>
-                                        <div class="loading">Loading</div>
-                                        <div class="error-message"></div>
-                                        <div class="sent-message">Your information has been updated. Thank you!</div>
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" name="Email" value="@Model.Email">
+                                        </div>                                        
+
                                         <div class="text-end">
                                             <button type="submit" class="btn btn-save">Save Changes</button>
                                         </div>
@@ -1112,99 +1025,7 @@
                                 </div>
                             </div>
 
-                            <!-- Notifications Tab -->
-                            <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
-                                <div class="tab-header">
-                                    <h2>Notification Settings</h2>
-                                </div>
-                                <div class="notifications-settings" data-aos="fade-up" data-aos-delay="100">
-                                    <div class="notification-group">
-                                        <h5>Order Updates</h5>
-                                        <div class="notification-item">
-                                            <div class="notification-info">
-                                                <div class="notification-title">Order status changes</div>
-                                                <div class="notification-desc">Receive notifications when your order status changes</div>
-                                            </div>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="orderStatusNotif" checked="">
-                                                <label class="form-check-label" for="orderStatusNotif"></label>
-                                            </div>
-                                        </div>
-                                        <div class="notification-item">
-                                            <div class="notification-info">
-                                                <div class="notification-title">Shipping updates</div>
-                                                <div class="notification-desc">Receive notifications about shipping and delivery</div>
-                                            </div>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="shippingNotif" checked="">
-                                                <label class="form-check-label" for="shippingNotif"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="notification-group">
-                                        <h5>Account Activity</h5>
-                                        <div class="notification-item">
-                                            <div class="notification-info">
-                                                <div class="notification-title">Security alerts</div>
-                                                <div class="notification-desc">Receive notifications about security-related activity</div>
-                                            </div>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="securityNotif" checked="">
-                                                <label class="form-check-label" for="securityNotif"></label>
-                                            </div>
-                                        </div>
-                                        <div class="notification-item">
-                                            <div class="notification-info">
-                                                <div class="notification-title">Password changes</div>
-                                                <div class="notification-desc">Receive notifications when your password is changed</div>
-                                            </div>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="passwordNotif" checked="">
-                                                <label class="form-check-label" for="passwordNotif"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="notification-group">
-                                        <h5>Marketing</h5>
-                                        <div class="notification-item">
-                                            <div class="notification-info">
-                                                <div class="notification-title">Promotions and deals</div>
-                                                <div class="notification-desc">Receive notifications about special offers and discounts</div>
-                                            </div>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="promoNotif">
-                                                <label class="form-check-label" for="promoNotif"></label>
-                                            </div>
-                                        </div>
-                                        <div class="notification-item">
-                                            <div class="notification-info">
-                                                <div class="notification-title">New product arrivals</div>
-                                                <div class="notification-desc">Receive notifications when new products are added</div>
-                                            </div>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="newProductNotif">
-                                                <label class="form-check-label" for="newProductNotif"></label>
-                                            </div>
-                                        </div>
-                                        <div class="notification-item">
-                                            <div class="notification-info">
-                                                <div class="notification-title">Personalized recommendations</div>
-                                                <div class="notification-desc">Receive notifications with product recommendations based on your interests</div>
-                                            </div>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="recommendNotif" checked="">
-                                                <label class="form-check-label" for="recommendNotif"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="notification-actions">
-                                        <button type="button" class="btn btn-save">Save Preferences</button>
-                                    </div>
-                                </div>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>

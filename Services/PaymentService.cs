@@ -1,8 +1,9 @@
-﻿using Repository;
-using Business.Models;
+﻿using Business.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Repositories.Interfaces;
+using Services.Interfaces;
 
 namespace Services
 {
