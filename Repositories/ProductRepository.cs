@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Business.Data;
+using Repositories.Interfaces;
 
 namespace Repository
 {
@@ -19,7 +20,9 @@ namespace Repository
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Products
+                .Include(p => p.Category)
+                .ToListAsync();
         }
 
         public async Task<Product> GetProductByIdAsync(Guid id)
@@ -48,5 +51,17 @@ namespace Repository
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<IEnumerable<Product>> FilterProductsByColorsAsync(List<string> colors)
+        {
+            if (colors == null || !colors.Any())
+                return new List<Product>();
+
+            return await _context.Products
+                .Where(p => colors.Contains(p.Color.ToLower()))
+                .Include(p => p.Category)
+                .ToListAsync();
+        }
+
     }
 }

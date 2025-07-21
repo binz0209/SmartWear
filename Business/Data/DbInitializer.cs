@@ -22,24 +22,6 @@ namespace Business.Data
                 context.SaveChanges();
             }
 
-            // 2️⃣ Seed Admin User
-            var adminRole = context.Roles.FirstOrDefault(r => r.Name == "Admin");
-            if (adminRole != null && !context.Users.Any(u => u.Username == "admin"))
-            {
-                var adminUser = new User
-                {
-                    Id = Guid.NewGuid(),
-                    Username = "admin",
-                    Email = "admin@smartwear.com",
-                    PasswordHash = "admin123", // Plain text
-                    RoleId = adminRole.Id,
-                    CreatedOn = DateTime.UtcNow,
-                    IsDeleted = false
-                };
-
-                context.Users.Add(adminUser);
-                context.SaveChanges();
-            }
 
             // 3️⃣ Seed Categories
             if (!context.Categories.Any())
@@ -56,15 +38,16 @@ namespace Business.Data
             }
 
             // 4️⃣ Seed Products
-            if (!context.Products.Any())
-            {
+            
+                
                 var manCategory = context.Categories.FirstOrDefault(c => c.Name == "Man");
                 var womenCategory = context.Categories.FirstOrDefault(c => c.Name == "Women");
 
                 if (manCategory != null && womenCategory != null)
                 {
-                    context.Products.AddRange(
-                        new Product
+                    if (!context.Products.Any(p => p.Name == "Classic White T-Shirt"))
+                    {
+                        context.Products.Add(new Product
                         {
                             Id = Guid.NewGuid(),
                             Name = "Classic White T-Shirt",
@@ -74,8 +57,12 @@ namespace Business.Data
                             CategoryId = manCategory.Id,
                             CreatedOn = DateTime.UtcNow,
                             IsDeleted = false
-                        },
-                        new Product
+                        });
+                    }
+
+                    if (!context.Products.Any(p => p.Name == "Blue Denim Jeans"))
+                    {
+                        context.Products.Add(new Product
                         {
                             Id = Guid.NewGuid(),
                             Name = "Blue Denim Jeans",
@@ -85,8 +72,12 @@ namespace Business.Data
                             CategoryId = manCategory.Id,
                             CreatedOn = DateTime.UtcNow,
                             IsDeleted = false
-                        },
-                        new Product
+                        });
+                    }
+
+                    if (!context.Products.Any(p => p.Name == "Red Summer Dress"))
+                    {
+                        context.Products.Add(new Product
                         {
                             Id = Guid.NewGuid(),
                             Name = "Red Summer Dress",
@@ -96,11 +87,102 @@ namespace Business.Data
                             CategoryId = womenCategory.Id,
                             CreatedOn = DateTime.UtcNow,
                             IsDeleted = false
-                        }
-                    );
+                        });
+                    }
+
+                    if (!context.Products.Any(p => p.Name == "Black Leather Jacket"))
+                    {
+                        context.Products.Add(new Product
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Black Leather Jacket",
+                            Description = "Stylish black leather for cool weather.",
+                            Price = 99.99m,
+                            Color = "black",
+                            ImageUrl = "/img/product/black_leather_jacket.jpg",
+                            StockQuantity = 20,
+                            CategoryId = manCategory.Id,
+                            CreatedOn = DateTime.UtcNow,
+                            IsDeleted = false,
+                            Size = "M"
+                        });
+                    }
+
+                    if (!context.Products.Any(p => p.Name == "Green Hoodie"))
+                    {
+                        context.Products.Add(new Product
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Green Hoodie",
+                            Description = "Comfortable green hoodie for casual wear.",
+                            Price = 39.99m,
+                            Color = "green",
+                            ImageUrl = "/img/product/green_hoodie.jpg",
+                            StockQuantity = 25,
+                            CategoryId = manCategory.Id,
+                            CreatedOn = DateTime.UtcNow,
+                            IsDeleted = false,
+                            Size = "M"
+                        });
+                    }
+
+                    if (!context.Products.Any(p => p.Name == "Pink Floral Blouse"))
+                    {
+                        context.Products.Add(new Product
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Pink Floral Blouse",
+                            Description = "Elegant blouse with pink floral design.",
+                            Price = 34.99m,
+                            Color = "pink",
+                            ImageUrl = "/img/product/pink_floral_blouse.jpg",
+                            StockQuantity = 40,
+                            CategoryId = womenCategory.Id,
+                            CreatedOn = DateTime.UtcNow,
+                            IsDeleted = false,
+                            Size = "L"
+                        });
+                    }
+
+                    if (!context.Products.Any(p => p.Name == "Yellow Raincoat"))
+                    {
+                        context.Products.Add(new Product
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Yellow Raincoat",
+                            Description = "Bright yellow raincoat for stormy days.",
+                            Price = 69.99m,
+                            Color = "yellow",
+                            ImageUrl = "/img/product/yellow_raincoat.jpg",
+                            StockQuantity = 15,
+                            CategoryId = womenCategory.Id,
+                            CreatedOn = DateTime.UtcNow,
+                            IsDeleted = false,
+                            Size = "S"
+                        });
+                    }
+
+                    if (!context.Products.Any(p => p.Name == "Purple Evening Gown"))
+                    {
+                        context.Products.Add(new Product
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Purple Evening Gown",
+                            Description = "Elegant purple gown for special occasions.",
+                            Price = 149.99m,
+                            Color = "purple",
+                            ImageUrl = "/img/product/purple_evening_gown.jpg",
+                            StockQuantity = 10,
+                            CategoryId = womenCategory.Id,
+                            CreatedOn = DateTime.UtcNow,
+                            IsDeleted = false,
+                            Size = "XL"
+                        });
+                    }
+
                     context.SaveChanges();
                 }
             }
         }
     }
-}
+

@@ -1,0 +1,52 @@
+﻿@model List<SmartWear.ViewModels.ProductViewModel>
+
+<div class="row gy-4">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var product in Model)
+        {
+            <div class="col-lg-6">
+                <div class="product-box">
+                    <div class="product-thumb">
+                        <img src="@product.ImageUrl" alt="@product.Name" class="main-img" loading="lazy" />
+                        <div class="product-overlay">
+                            <div class="product-quick-actions">
+                                <button type="button" class="quick-action-btn"><i class="bi bi-heart"></i></button>
+                                <button type="button" class="quick-action-btn"><i class="bi bi-arrow-repeat"></i></button>
+                                <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="quick-action-btn"><i class="bi bi-eye"></i></a>
+                            </div>
+                            <div class="add-to-cart-container">
+                                <button type="button" class="add-to-cart-btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <div class="product-details">
+                            <h3 class="product-title">@product.Name</h3>
+                            <div class="product-price">
+                                <span>$@product.Price</span>
+                            </div>
+                        </div>
+                        <div class="product-rating-container">
+                            <div class="rating-stars">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star"></i>
+                            </div>
+                            <span class="rating-number">4.0</span>
+                        </div>
+                        <div class="product-color-options">
+                            <span class="color-option active" style="background-color: @product.Color;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Không có sản phẩm nào.</p>
+    }
+</div>

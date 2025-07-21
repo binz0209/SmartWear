@@ -1,0 +1,33 @@
+﻿@model SmartWear.ViewModels.CategoryProductListViewModel
+
+<!-- Danh sách sản phẩm -->
+@await Html.PartialAsync("_ProductListPartial", Model.Products)
+
+<!-- Phân trang -->
+@if (Model.TotalPages > 1)
+{
+    <nav class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a href="javascript:void(0);" class="page-link page-btn" data-page="@(@Model.CurrentPage - 1)">Previous</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                    <a href="javascript:void(0);" class="page-link page-btn" data-page="@i">@i</a>
+                </li>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a href="javascript:void(0);" class="page-link page-btn" data-page="@(@Model.CurrentPage + 1)">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

@@ -3,6 +3,8 @@ using Business.Data;
 using Repository;
 using Services;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Repositories.Interfaces;
+using Services.Interfaces;
 
 namespace SmartWear
 {

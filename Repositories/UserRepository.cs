@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Business.Data;
+using Repositories.Interfaces;
 
 namespace Repository
 {
@@ -24,7 +25,9 @@ namespace Repository
 
         public async Task<User> GetUserByIdAsync(Guid id)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users
+        .Include(u => u.Addresses)
+        .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task AddUserAsync(User user)
@@ -38,6 +41,8 @@ namespace Repository
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
+
+
 
         public async Task DeleteUserAsync(Guid id)
         {

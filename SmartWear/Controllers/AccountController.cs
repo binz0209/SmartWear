@@ -2,8 +2,9 @@
 using Business.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Services;
+using Services.Interfaces;
 using SmartWear.Models;
+using SmartWear.ViewModels;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -21,7 +22,56 @@ namespace SmartWear.Controllers
             _roleService = roleService;
             _logger = logger;
         }
-        public IActionResult Account() => View();
+
+        [HttpGet]
+        public async Task<IActionResult> Account()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+
+            var user = await _userService.GetUserByIdAsync(Guid.Parse(userId));
+            
+
+            var model = new UserProfileViewModel
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email                
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
+        {
+            _logger.LogInformation("UpdateProfile action triggered");
+
+            if (!ModelState.IsValid)
+            {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    _logger.LogWarning("Model error: " + error.ErrorMessage);
+                }
+                return View("Account", model);
+            }
+
+            var user = await _userService.GetUserByIdAsync(model.Id);
+            if (user == null)
+            {
+                TempData["Error"] = "Không tìm thấy người dùng.";
+                return RedirectToAction("Account");
+            }
+
+            user.Username = model.Username;
+            user.Email = model.Email;                      
+
+            await _userService.UpdateUserAsync(user);
+
+            TempData["Success"] = "Thông tin đã được cập nhật.";
+            return RedirectToAction("Account");
+        }
+
         public IActionResult Login() => View();
 
         [HttpPost]
@@ -160,8 +210,6 @@ namespace SmartWear.Controllers
             return Challenge(properties, "Google");
         }
 
-
-
         public async Task<IActionResult> GoogleLoginCallback()
         {
             // Google middleware sẽ tự xử lý đăng nhập và gán vào User
@@ -210,13 +258,11 @@ namespace SmartWear.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
-
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        
     }
 }
