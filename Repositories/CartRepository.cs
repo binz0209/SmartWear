@@ -48,5 +48,20 @@ namespace Repository
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<Cart?> GetCartByUserIdAsync(Guid userId)
+        {
+            return await _context.Carts
+                .Include(c => c.CartItems)
+                .ThenInclude(ci => ci.Product)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+        }
+        public async Task<Cart> GetCartWithItemsByUserIdAsync(Guid userId)
+        {
+            return await _context.Carts
+                .Include(c => c.CartItems)
+                .ThenInclude(ci => ci.Product)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+        }
+
     }
 }

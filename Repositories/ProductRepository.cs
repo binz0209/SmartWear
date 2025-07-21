@@ -19,12 +19,26 @@ namespace Repository
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Products.Include(p => p.Category).Include(p => p.OrderItems).Include(p => p.ProductReviews).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Product>> SearchProductsAsync(string keyword)
+        {
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.ProductReviews)
+                .Where(p => !p.IsDeleted &&
+                           (p.Name.Contains(keyword) ||
+                            p.Description.Contains(keyword) ||
+                            p.Price.ToString().Contains(keyword)))
+                .ToListAsync();
         }
 
         public async Task<Product> GetProductByIdAsync(Guid id)
         {
-            return await _context.Products.FindAsync(id);
+            return await _context.Products.Include(p => p.Category)
+        .Include(p => p.ProductReviews)
+        .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task AddProductAsync(Product product)
@@ -48,5 +62,7 @@ namespace Repository
                 await _context.SaveChangesAsync();
             }
         }
+
+       
     }
 }

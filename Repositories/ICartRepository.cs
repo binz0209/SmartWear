@@ -12,5 +12,7 @@ namespace Repository
         Task AddCartAsync(Cart cart);
         Task UpdateCartAsync(Cart cart);
         Task DeleteCartAsync(Guid id);
+        Task<Cart?> GetCartByUserIdAsync(Guid userId);
+        Task<Cart?> GetCartWithItemsByUserIdAsync(Guid userId);
     }
 }

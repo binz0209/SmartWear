@@ -11,6 +11,8 @@ namespace Repository
         Task<CartItem> GetCartItemByIdAsync(Guid id);
         Task AddCartItemAsync(CartItem cartItem);
         Task UpdateCartItemAsync(CartItem cartItem);
-        Task DeleteCartItemAsync(Guid id);
+        Task DeleteCartItemAsync(Guid cartItemId);
+        Task<CartItem?> GetCartItemByCartIdAndProductIdAsync(Guid cartId, Guid productId);
+        Task<IEnumerable<CartItem>> GetCartItemsByCartIdAsync(Guid cartId);
     }
 }
