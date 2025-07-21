@@ -1,0 +1,58 @@
+﻿@using System.Security.Claims
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var user = User as ClaimsPrincipal;
+    var userName = "";
+    if (user != null)
+    {
+        userName = user.FindFirstValue(ClaimTypes.Name) ?? "Guest";
+    }
+    //HttpContextAccessor.HttpContext?.Session.GetString("UserName") ?? "Guest";
+}
+<!--header start-->
+<header class="header fixed-top clearfix">
+    <!--logo start-->
+    <div class="brand">
+
+        <a href="#" class="logo">
+            <img src="~/images/logo.png" alt="">
+        </a>
+        <div class="sidebar-toggle-box">
+            <div class="fa fa-bars"></div>
+        </div>
+    </div>
+    <!--logo end-->
+    <div class="top-nav clearfix">
+        <!--search & user info start-->
+        <ul class="nav pull-right top-menu">
+            <!-- user login dropdown start-->
+            <li class="dropdown">
+                @{
+                    if (userName != null)
+                    {
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <img alt="" src="@Url.Content("~/images/avatar1_small.jpg")">
+                            <span class="username">@userName</span>
+                            <b class="caret"></b>
+                        </a>
+
+                        <ul class="dropdown-menu extended logout">
+                            <li>
+                                <a asp-page="/Account/Logout"><i class="fa fa-key"></i> Đăng xuất</a>
+
+                            </li>
+                        </ul>
+                    }
+                }
+            </li>
+            <!-- user login dropdown end -->
+            <li>
+                <div class="toggle-right-box">
+                    <div class="fa fa-bars"></div>
+                </div>
+            </li>
+        </ul>
+        <!--search & user info end-->
+    </div>
+</header>
+<!--header end-->

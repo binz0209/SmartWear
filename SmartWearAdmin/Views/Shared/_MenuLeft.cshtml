@@ -1,0 +1,53 @@
+﻿<!--sidebar start-->
+<aside>
+    <div id="sidebar" class="nav-collapse">
+        <!-- sidebar menu start-->
+        <div class="leftside-navigation">
+            <ul class="sidebar-menu" id="nav-accordion">
+                <li>
+                    <a asp-controller="Home" asp-action="Index">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="sub-menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-list"></i>
+                        <span>Product Management</span>
+                    </a>
+                    <ul class="sub">
+                        <li><a asp-controller="Products" asp-action="Index"><i class="fa fa-cubes"></i> Products</a></li>
+                        <li><a asp-controller="Carts" asp-action="Index"><i class="fa fa-shopping-cart"></i> Shopping Carts</a></li>
+                        <li><a asp-controller="Orders" asp-action="Index"><i class="fa fa-file-text"></i> Orders</a></li>
+                        <li><a asp-controller="Payments" asp-action="Index"><i class="fa fa-credit-card"></i> Payments</a></li>
+                    </ul>
+                </li>
+
+                <li class="sub-menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-users"></i>
+                        <span>User Management</span>
+                    </a>
+                    <ul class="sub">
+                        <li><a asp-controller="Users" asp-action="Index"><i class="fa fa-user"></i> Users</a></li>
+                        <li><a asp-controller="ChatLogs" asp-action="Index"><i class="fa fa-comments"></i> Chat Logs</a></li>
+                    </ul>
+                </li>
+
+                <li class="sub-menu">
+                    <a href="javascript:;">
+                        <i class="fa fa-bar-chart"></i>
+                        <span>Reports & Logs</span>
+                    </a>
+                    <ul class="sub">
+                        <li><a asp-controller="AuditLogs" asp-action="Index"><i class="fa fa-history"></i> System Audit Logs</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+        <!-- sidebar menu end-->
+    </div>
+</aside>
+<!--sidebar end-->

@@ -1,0 +1,55 @@
+﻿@model Business.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h2 class="mb-4 text-secondary fw-bold text-center">Product Details</h2>
+
+<div class="d-flex justify-content-center">
+    <div class="card shadow p-4 border-0" style="max-width: 900px; width: 100%; background-color: #fdfdfd;">
+        <div class="row g-4">
+            <div class="col-md-5 d-flex align-items-center justify-content-center">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" class="img-thumbnail border-0 shadow-sm" style="max-height: 300px;" alt="@Model.Name" />
+                }
+                else
+                {
+                    <span class="text-muted">No Image Available</span>
+                }
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <h3 class="fw-bold text-primary">@Model.Name</h3>
+
+                    <p class="fw-semibold @(Model.IsDeleted ? "text-danger" : "text-success")">
+                        <i class="fa fa-circle me-1"></i>
+                        @(Model.IsDeleted ? "Deleted (Soft-Delete)" : "Active")
+                    </p>
+
+                    <ul class="list-unstyled fs-6">
+                        <li><strong>Price:</strong> @Model.Price.ToString("N0") ₫</li>
+                        <li><strong>Stock:</strong> @Model.StockQuantity</li>
+                        <li><strong>Category:</strong> @Model.Category?.Name</li>
+                        <li><strong>Size:</strong> @Model.Size</li>
+                        <li><strong>Color:</strong> @Model.Color</li>
+                        <li><strong>Description:</strong> @Model.Description</li>
+                    </ul>
+
+                    <hr />
+                    <small class="text-muted">
+                        <i class="fa fa-calendar me-1"></i> Created: @Model.CreatedOn.ToString("dd/MM/yyyy")<br />
+                        <i class="fa fa-edit me-1"></i> Modified: @(Model.ModifiedOn?.ToString("dd/MM/yyyy") ?? "N/A")<br />
+                        <i class="fa fa-trash me-1"></i> Deleted: @(Model.DeletedOn?.ToString("dd/MM/yyyy") ?? "N/A")
+                    </small>
+
+                    <div class="mt-3">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm me-2">Edit</a>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

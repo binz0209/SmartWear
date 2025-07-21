@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Business.Models.Product>
+
+@{
+    ViewData["Title"] = "Deleted Products (Trash)";
+}
+
+<h2 class="mb-3">Deleted Products (Trash)</h2>
+
+<p>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fa fa-arrow-left"></i> Back to List
+    </a>
+</p>
+
+<form asp-action="CleanTrash" method="post" class="d-inline">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">
+        <i class="fa fa-trash"></i> Clean Trash (Hard Delete)
+    </button>
+</form>
+
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Deleted On</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="align-middle text-center">
+                <td>@item.Name</td>
+                <td>@item.Category?.Name</td>
+                <td>@item.DeletedOn?.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <form asp-action="Restore" asp-route-id="@item.Id" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-success">Restore</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

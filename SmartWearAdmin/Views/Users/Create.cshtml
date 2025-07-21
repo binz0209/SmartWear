@@ -1,0 +1,61 @@
+﻿@model Business.Models.User
+
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<h2>Create User</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" type="email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <div class="input-group">
+                    <input name="PlainPassword" type="password" class="form-control" id="passwordInput" />
+                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                        <i class="fa fa-eye"></i>
+                    </button>
+                </div>
+                <span class="text-danger" asp-validation-for="PasswordHash"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="RoleId" class="form-label"></label>
+                <select asp-for="RoleId" class="form-select" asp-items="ViewBag.RoleId"></select>
+                <span asp-validation-for="RoleId" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    function togglePassword() {
+        const input = document.getElementById('passwordInput');
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+</script>

@@ -8,6 +8,7 @@ using Services;
 using Services.VnPay;
 using SmartWear.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace SmartWear.Controllers
 {
@@ -94,8 +95,10 @@ namespace SmartWear.Controllers
         public async Task<IActionResult> PaymentCallbackVnpay()
         {
             var response = _vnPayService.PaymentExecute(Request.Query);
-            if (!response.Success)
+            _logger.LogInformation("\n\nVNPAY response JSON: {ResponseJson}", System.Text.Json.JsonSerializer.Serialize(response));
+            if (!response.Success || response.VnPayResponseCode != "00")
                 return RedirectToAction("Checkout");
+
 
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null) return RedirectToAction("Login", "Account");

@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Checkout";
+    var subtotal = Model.Sum(i => i.Quantity * i.Product.Price);
+    var shipping = 20000M;
+    var tax = subtotal * 0.085M;
+    var total = subtotal + shipping + tax;
 }
 
 <body class="checkout-page">
@@ -246,19 +250,19 @@
                                 <div class="order-totals">
                                     <div class="order-subtotal d-flex justify-content-between">
                                         <span>Subtotal</span>
-                                        <span>@subtotal.ToString("0") VND</span>
+                                        <span>@subtotal.ToString("N0") VND</span>
                                     </div>
                                     <div class="order-shipping d-flex justify-content-between">
                                         <span>Shipping</span>
-                                        <span>20000 VND</span>
+                                        <span>@shipping.ToString("N0") VND</span>
                                     </div>
                                     <div class="order-tax d-flex justify-content-between">
                                         <span>Tax</span>
-                                        <span>@((subtotal * 0.1m).ToString("0"))  VND</span>
+                                        <span>@tax.ToString("N0") VND</span>
                                     </div>
                                     <div class="order-total d-flex justify-content-between">
                                         <span>Total</span>
-                                        <span>@((subtotal * 1.1m + 20000m).ToString("0"))  VND</span>
+                                        <span>@total.ToString("N0") VND</span>
                                     </div>
                                 </div>
 
