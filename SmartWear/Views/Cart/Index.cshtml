@@ -49,7 +49,7 @@
                                             <div class="col-lg-6 col-12 mt-3">
                                                 <div class="product-info d-flex align-items-center">
                                                     <div class="product-image">
-                                                        <img src="~/img/product/@(item.Product.ImageUrl?.Split(',')[0] ?? "default-product.webp")" class="img-fluid" />
+                                                        <img src="@(item.Product.ImageUrl?.Split(',')[0] ?? "/img/product/default-product.webp")" class="img-fluid" />
                                                     </div>
                                                     <div class="product-details">
                                                         <h6 class="product-title">@item.Product.Name</h6>
@@ -106,8 +106,8 @@
                                 <div class="summary-item >
                                     <span class="summary-label">Shipping</span>
                                     <span class="summary-value">@shipping.ToString("C")</span>
-
-
+                                    
+                                   
                                 </div>
                                 <div class="summary-item">
                                     <span class="summary-label">Tax</span>

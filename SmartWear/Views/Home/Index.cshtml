@@ -11,60 +11,9 @@
         
         <!-- Welcome Section -->
         <section id="best-sellers" class="best-sellers section">
-
             <div class="container section-title" data-aos="fade-up">
                 <h2>Welcome</h2>
             </div>
-
-            <div class="container" data-aos="fade-up" data-aos-delay="100">
-                <div class="row g-4">
-                    @{
-                        var bestSellerDelay = 0;
-                    }
-                    @foreach (var product in Model.BestSellers)
-                    {
-                        <div class="col-6 col-lg-3">
-                            <div class="product-card" data-aos="zoom-in" >
-                                <div class="product-image">
-                                    <img src="~/img/product/@(product.ImageUrl ?? "default-product.webp")" class="main-image img-fluid" alt="@product.Name">
-                                    <div class="product-overlay">
-                                        <div class="product-actions">
-                                            <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="action-btn" title="Quick View">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a href="@Url.Action("AddToCart", "Cart", new { productId = product.Id })" class="action-btn" title="Add to Cart">
-                                                <i class="bi bi-cart-plus"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="product-details">
-                                    <div class="product-category">@product.CategoryName</div>
-                                    <h4 class="product-title">
-                                        <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })">@product.Name</a>
-                                    </h4>
-                                    <div class="product-meta">
-                                        <div class="product-price">@product.Price.ToString("C")</div>
-                                        <div class="product-rating">
-                                            @for (int i = 0; i < product.Rating; i++)
-                                            {
-                                                <i class="bi bi-star-fill"></i>
-                                            }
-                                            @for (int i = product.Rating; i < 5; i++)
-                                            {
-                                                <i class="bi bi-star"></i>
-                                            }
-                                            <span> (@product.ReviewCount)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        bestSellerDelay += 100;
-                    }
-                </div>
-            </div>
-
         </section>
         <!-- /Best Sellers Section -->
         <!-- Product List Section -->
@@ -93,7 +42,7 @@
                                 <div class="product-image">
                                     @if (!string.IsNullOrEmpty(product.ImageUrl))
                                     {
-                                        <img src="~/img/product/@product.ImageUrl" alt="@product.Name" class="img-fluid main-img">
+                                        <img src="@product.ImageUrl" alt="@product.Name" class="img-fluid main-img">
                                     }
                                     else
                                     {

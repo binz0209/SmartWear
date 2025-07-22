@@ -36,7 +36,16 @@ namespace SmartWear.Controllers
             _cartItemService = cartItemService;
         }
 
-        public IActionResult Index() => View(); // Cart
+        public async Task<IActionResult> Index()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null) return RedirectToAction("Login", "Account");
+
+            var userId = Guid.Parse(userIdClaim.Value);
+            var cart = await _cartService.GetCartWithItemsByUserIdAsync(userId);
+
+            return View(cart?.CartItems ?? new List<CartItem>());
+        }
 
         public async Task<IActionResult> Checkout()
         {
