@@ -1,0 +1,47 @@
+﻿@model Business.Models.User
+
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<h2 class="mb-3 text-center">User Details</h2>
+
+<div class="card shadow-sm mx-auto" style="max-width: 700px;">
+    <div class="card-body">
+        <h4 class="card-title">@Model.Username</h4>
+
+        @if (Model.IsDeleted)
+        {
+            <p class="text-danger fw-bold">Status: Deleted (Soft-Delete)</p>
+        }
+        else
+        {
+            <p class="text-success fw-bold">Status: Active</p>
+        }
+
+        <dl class="row">
+            <dt class="col-sm-4">Email</dt>
+            <dd class="col-sm-8">@Model.Email</dd>
+
+            <dt class="col-sm-4">Password Hash</dt>
+            <dd class="col-sm-8"><code>@Model.PasswordHash</code></dd>
+
+            <dt class="col-sm-4">Role</dt>
+            <dd class="col-sm-8">@Model.Role?.Name</dd>
+
+            <dt class="col-sm-4">Created On</dt>
+            <dd class="col-sm-8">@Model.CreatedOn.ToString("dd/MM/yyyy")</dd>
+
+            <dt class="col-sm-4">Modified On</dt>
+            <dd class="col-sm-8">@Model.ModifiedOn?.ToString("dd/MM/yyyy") ?? "N/A"</dd>
+
+            <dt class="col-sm-4">Deleted On</dt>
+            <dd class="col-sm-8">@Model.DeletedOn?.ToString("dd/MM/yyyy") ?? "N/A"</dd>
+        </dl>
+
+        <div class="mt-3 text-center">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">Edit</a>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">Back to List</a>
+        </div>
+    </div>
+</div>

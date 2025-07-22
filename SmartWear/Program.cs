@@ -3,6 +3,7 @@ using Business.Data;
 using Repository;
 using Services;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Services.VnPay;
 using Repositories.Interfaces;
 using Services.Interfaces;
 
@@ -71,6 +72,19 @@ namespace SmartWear
                  options.CallbackPath = "/signin-google"; // hoặc đường dẫn bạn đã khai báo trên Google Console
              });
 
+            builder.Services.AddDistributedMemoryCache(); // Bộ nhớ cache cho session
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Thời gian timeout session
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+
+            // VNpayService DI
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
+
+
             var app = builder.Build();
 
             // Initialize DB
@@ -93,6 +107,7 @@ namespace SmartWear
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();

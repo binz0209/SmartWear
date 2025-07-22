@@ -9,8 +9,11 @@ namespace Repositories.Interfaces
     {
         Task<IEnumerable<Cart>> GetAllCartsAsync();
         Task<Cart> GetCartByIdAsync(Guid id);
+        Task<Cart> GetCartByUserIdAsync(Guid userId);
+        Task<Cart> GetCartWithItemsByUserIdAsync(Guid userId);
         Task AddCartAsync(Cart cart);
         Task UpdateCartAsync(Cart cart);
         Task DeleteCartAsync(Guid id);
+        Task ClearCartAsync(Guid cartId);
     }
 }

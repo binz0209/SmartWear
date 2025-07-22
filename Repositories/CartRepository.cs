@@ -28,6 +28,21 @@ namespace Repository
             return await _context.Carts.FindAsync(id);
         }
 
+        public async Task<Cart> GetCartByUserIdAsync(Guid userId)
+        {
+            return await _context.Carts
+                .Include(c => c.CartItems)
+                .ThenInclude(ci => ci.Product)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+        }
+        public async Task<Cart> GetCartWithItemsByUserIdAsync(Guid userId)
+        {
+            return await _context.Carts
+                .Include(c => c.CartItems)
+                .ThenInclude(ci => ci.Product)
+                .FirstOrDefaultAsync(c => c.UserId == userId && !c.IsDeleted);
+        }
+
         public async Task AddCartAsync(Cart cart)
         {
             await _context.Carts.AddAsync(cart);
@@ -49,5 +64,18 @@ namespace Repository
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task ClearCartAsync(Guid cartId)
+        {
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.Id == cartId);
+
+            if (cart != null)
+            {
+                _context.CartItems.RemoveRange(cart.CartItems);
+                await _context.SaveChangesAsync();
+            }
+        }
+
     }
 }

@@ -26,6 +26,15 @@ namespace Services
             return await _cartRepository.GetCartByIdAsync(id);
         }
 
+        public async Task<Cart> GetCartByUserIdAsync(Guid userId)
+        {
+            return await _cartRepository.GetCartByUserIdAsync(userId);
+        }
+        public async Task<Cart> GetCartWithItemsByUserIdAsync(Guid userId)
+        {
+            return await _cartRepository.GetCartWithItemsByUserIdAsync(userId);
+        }
+
         public async Task AddCartAsync(Cart cart)
         {
             await _cartRepository.AddCartAsync(cart);
@@ -40,5 +49,10 @@ namespace Services
         {
             await _cartRepository.DeleteCartAsync(id);
         }
+        public async Task ClearCartAsync(Guid cartId)
+        {
+            await _cartRepository.ClearCartAsync(cartId);
+        }
+
     }
 }

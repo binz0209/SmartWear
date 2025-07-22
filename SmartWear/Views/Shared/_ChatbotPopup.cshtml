@@ -213,6 +213,8 @@
             toggleChatbot(); // Đóng chat
         }
 
+        // Nếu click chuột trái hoặc phải ra ngoài chatbot thì đóng chatbot
+
         if (isVisible && event.key === "Enter") {
             const active = document.activeElement;
             if (active && active.id === "userMessage") {
@@ -221,6 +223,19 @@
             }
         }
     });
+
+    document.addEventListener('click', function (event) {
+        const popup = document.getElementById('chatbot-popup');
+        const openBtn = document.getElementById('chat-open-btn');
+
+        if (popup.style.display === 'flex') {
+            const isClickInside = popup.contains(event.target) || openBtn.contains(event.target);
+            if (!isClickInside) {
+                toggleChatbot(); // Đóng chat
+            }
+        }
+    });
+
 
     async function toggleChatbot() {
         const popup = document.getElementById("chatbot-popup");
