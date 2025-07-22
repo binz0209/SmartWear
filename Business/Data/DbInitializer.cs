@@ -22,24 +22,7 @@ namespace Business.Data
                 context.SaveChanges();
             }
 
-            // 2️⃣ Seed Admin User
-            var adminRole = context.Roles.FirstOrDefault(r => r.Name == "Admin");
-            if (adminRole != null && !context.Users.Any(u => u.Username == "admin"))
-            {
-                var adminUser = new User
-                {
-                    Id = Guid.NewGuid(),
-                    Username = "admin",
-                    Email = "admin@smartwear.com",
-                    PasswordHash = "admin123", // Plain text, you should hash it for real use
-                    RoleId = adminRole.Id,
-                    CreatedOn = DateTime.UtcNow,
-                    IsDeleted = false
-                };
 
-                context.Users.Add(adminUser);
-                context.SaveChanges();
-            }
             // 3️⃣ Seed Categories
             if (!context.Categories.Any())
             {
@@ -104,147 +87,101 @@ namespace Business.Data
                         CategoryId = womenCategory.Id,
                         CreatedOn = DateTime.UtcNow,
                         IsDeleted = false
-                    }
-                );
-
-                    context.SaveChanges();
+                    });
                 }
-            }
 
-            // 5️⃣ Seed Orders
-            if (!context.Orders.Any())
-            {
-                var adminUserId = context.Users.FirstOrDefault(u => u.Username == "admin")?.Id;
-                var addressId = context.Addresses.FirstOrDefault(a => a.UserId == adminUserId)?.Id;
-
-                if (adminUserId != null && addressId != null)
+                if (!context.Products.Any(p => p.Name == "Black Leather Jacket"))
                 {
-                    var order = new Order
+                    context.Products.Add(new Product
                     {
                         Id = Guid.NewGuid(),
-                        OrderDate = DateTime.UtcNow,
-                        Status = "Pending",
-                        UserId = adminUserId.Value,
-                        AddressId = addressId.Value,
+                        Name = "Black Leather Jacket",
+                        Description = "Stylish black leather for cool weather.",
+                        Price = 99.99m,
+                        Color = "black",
+                        ImageUrl = "/img/product/black_leather_jacket.jpg",
+                        StockQuantity = 20,
+                        CategoryId = manCategory.Id,
                         CreatedOn = DateTime.UtcNow,
-                        IsDeleted = false
-                    };
-                    context.Orders.Add(order);
-                    context.SaveChanges();
+                        IsDeleted = false,
+                        Size = "M"
+                    });
                 }
-            }
 
-            // 6️⃣ Seed OrderItems
-            if (!context.OrderItems.Any())
-            {
-                var orderId = context.Orders.FirstOrDefault()?.Id;
-                var productId = context.Products.FirstOrDefault()?.Id;
-
-                if (orderId != null && productId != null)
+                if (!context.Products.Any(p => p.Name == "Green Hoodie"))
                 {
-                    var orderItem = new OrderItem
+                    context.Products.Add(new Product
                     {
                         Id = Guid.NewGuid(),
-                        Quantity = 2,
-                        UnitPrice = 19.99m,
-                        OrderId = orderId.Value,
-                        ProductId = productId.Value,
+                        Name = "Green Hoodie",
+                        Description = "Comfortable green hoodie for casual wear.",
+                        Price = 39.99m,
+                        Color = "green",
+                        ImageUrl = "/img/product/green_hoodie.jpg",
+                        StockQuantity = 25,
+                        CategoryId = manCategory.Id,
                         CreatedOn = DateTime.UtcNow,
-                        IsDeleted = false
-                    };
-                    context.OrderItems.Add(orderItem);
-                    context.SaveChanges();
+                        IsDeleted = false,
+                        Size = "M"
+                    });
                 }
-            }
 
-            // 7️⃣ Seed Payments
-            if (!context.Payments.Any())
-            {
-                var orderId = context.Orders.FirstOrDefault()?.Id;
-
-                if (orderId != null)
+                if (!context.Products.Any(p => p.Name == "Pink Floral Blouse"))
                 {
-                    var payment = new Payment
+                    context.Products.Add(new Product
                     {
                         Id = Guid.NewGuid(),
-                        OrderId = orderId.Value,
-                        PaymentMethod = "Credit Card",
-                        IsPaid = true,
-                        PaymentDate = DateTime.UtcNow,
+                        Name = "Pink Floral Blouse",
+                        Description = "Elegant blouse with pink floral design.",
+                        Price = 34.99m,
+                        Color = "pink",
+                        ImageUrl = "/img/product/pink_floral_blouse.jpg",
+                        StockQuantity = 40,
+                        CategoryId = womenCategory.Id,
                         CreatedOn = DateTime.UtcNow,
-                        IsDeleted = false
-                    };
-                    context.Payments.Add(payment);
-                    context.SaveChanges();
+                        IsDeleted = false,
+                        Size = "L"
+                    });
                 }
-            }
 
-            // 8️⃣ Seed CartItems
-            if (!context.CartItems.Any())
-            {
-                var cartId = context.Carts.FirstOrDefault()?.Id;
-                var productId = context.Products.FirstOrDefault()?.Id;
-
-                if (cartId != null && productId != null)
+                if (!context.Products.Any(p => p.Name == "Yellow Raincoat"))
                 {
-                    var cartItem = new CartItem
+                    context.Products.Add(new Product
                     {
                         Id = Guid.NewGuid(),
-                        CartId = cartId.Value,
-                        ProductId = productId.Value,
-                        Quantity = 1,
+                        Name = "Yellow Raincoat",
+                        Description = "Bright yellow raincoat for stormy days.",
+                        Price = 69.99m,
+                        Color = "yellow",
+                        ImageUrl = "/img/product/yellow_raincoat.jpg",
+                        StockQuantity = 15,
+                        CategoryId = womenCategory.Id,
                         CreatedOn = DateTime.UtcNow,
-                        IsDeleted = false
-                    };
-                    context.CartItems.Add(cartItem);
-                    context.SaveChanges();
+                        IsDeleted = false,
+                        Size = "S"
+                    });
                 }
-            }
 
-            // 9️⃣ Seed ChatLogs
-            if (!context.ChatLogs.Any())
-            {
-                var userId = context.Users.FirstOrDefault()?.Id;
-
-                if (userId != null)
+                if (!context.Products.Any(p => p.Name == "Purple Evening Gown"))
                 {
-                    var chatLog = new ChatLog
+                    context.Products.Add(new Product
                     {
                         Id = Guid.NewGuid(),
-                        UserId = userId.Value,
-                        UserQuestion = "What is my order status?",
-                        BotResponse = "Your order is pending.",
+                        Name = "Purple Evening Gown",
+                        Description = "Elegant purple gown for special occasions.",
+                        Price = 149.99m,
+                        Color = "purple",
+                        ImageUrl = "/img/product/purple_evening_gown.jpg",
+                        StockQuantity = 10,
+                        CategoryId = womenCategory.Id,
                         CreatedOn = DateTime.UtcNow,
-                        IsDeleted = false
-                    };
-                    context.ChatLogs.Add(chatLog);
-                    context.SaveChanges();
+                        IsDeleted = false,
+                        Size = "XL"
+                    });
                 }
-            }
 
-            // 🔟 Seed ProductReviews
-            if (!context.ProductReviews.Any())
-            {
-                var productId = context.Products.FirstOrDefault()?.Id;
-                var userId = context.Users.FirstOrDefault()?.Id;
-
-                if (productId != null && userId != null)
-                {
-                    var productReview = new ProductReview
-                    {
-                        Id = Guid.NewGuid(),
-                        ProductId = productId.Value,
-                        UserId = userId.Value,
-                        Rating = 5,
-                        Comment = "Great product!",
-                        CreatedOn = DateTime.UtcNow,
-                        IsDeleted = false
-                    };
-                    context.ProductReviews.Add(productReview);
-                    context.SaveChanges();
-                }
+                context.SaveChanges();
             }
         }
     }
 }
-
