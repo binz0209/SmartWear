@@ -40,14 +40,26 @@ namespace Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteCartItemAsync(Guid id)
+        public async Task DeleteCartItemAsync(Guid cartItemId)
         {
-            var cartItem = await GetCartItemByIdAsync(id);
-            if (cartItem != null)
+            var item = await _context.CartItems.FindAsync(cartItemId);
+            if (item != null)
             {
-                _context.CartItems.Remove(cartItem);
+                _context.CartItems.Remove(item);
                 await _context.SaveChangesAsync();
             }
+        }
+        public async Task<CartItem?> GetCartItemByCartIdAndProductIdAsync(Guid cartId, Guid productId)
+        {
+            return await _context.CartItems
+                .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
+        }
+        public async Task<IEnumerable<CartItem>> GetCartItemsByCartIdAsync(Guid cartId)
+        {
+            return await _context.CartItems
+                                 .Include(ci => ci.Product)
+                                 .Where(ci => ci.CartId == cartId)
+                                 .ToListAsync();
         }
     }
 }

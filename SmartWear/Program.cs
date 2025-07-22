@@ -64,13 +64,13 @@ namespace SmartWear
                  options.LoginPath = "/Account/Login";
                  options.AccessDeniedPath = "/Account/AccessDenied";
                  options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-             })
-             .AddGoogle("Google", options =>
-             {
-                 options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-                 options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-                 options.CallbackPath = "/signin-google"; // hoặc đường dẫn bạn đã khai báo trên Google Console
              });
+             //.AddGoogle("Google", options =>
+             //{
+             //    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+             //    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+             //    options.CallbackPath = "/signin-google"; // hoặc đường dẫn bạn đã khai báo trên Google Console
+             //});
 
             builder.Services.AddDistributedMemoryCache(); // Bộ nhớ cache cho session
             builder.Services.AddSession(options =>

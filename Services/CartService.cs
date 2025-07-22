@@ -10,10 +10,13 @@ namespace Services
     public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
+        private readonly ICartItemRepository _cartItemRepository;
 
-        public CartService(ICartRepository cartRepository)
+
+        public CartService(ICartRepository cartRepository, ICartItemRepository cartItemRepository)
         {
             _cartRepository = cartRepository;
+            _cartItemRepository = cartItemRepository;
         }
 
         public async Task<IEnumerable<Cart>> GetAllCartsAsync()
@@ -53,6 +56,45 @@ namespace Services
         {
             await _cartRepository.ClearCartAsync(cartId);
         }
+        public async Task<Cart> GetOrCreateCartAsync(Guid userId)
+        {
+            var cart = await _cartRepository.GetCartByUserIdAsync(userId);
+            if (cart == null)
+            {
+                cart = new Cart
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    CreatedOn = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+                await _cartRepository.AddCartAsync(cart);
+            }
+            return cart;
+        }
+        public async Task AddToCartAsync(Guid userId, Guid productId, int quantity)
+        {
+            var cart = await GetOrCreateCartAsync(userId);
 
+            var existingItem = await _cartItemRepository.GetCartItemByCartIdAndProductIdAsync(cart.Id, productId);
+            if (existingItem != null)
+            {
+                existingItem.Quantity += quantity;
+                await _cartItemRepository.UpdateCartItemAsync(existingItem);
+            }
+            else
+            {
+                var newItem = new CartItem
+                {
+                    Id = Guid.NewGuid(),
+                    CartId = cart.Id,
+                    ProductId = productId,
+                    Quantity = quantity,
+                    CreatedOn = DateTime.UtcNow,
+                    IsDeleted = false
+                };
+                await _cartItemRepository.AddCartItemAsync(newItem);
+            }
+        }
     }
 }

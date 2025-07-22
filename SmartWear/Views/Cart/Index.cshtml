@@ -1,12 +1,19 @@
-﻿@{
+﻿@model IEnumerable<Business.Models.CartItem>
+
+@{
     ViewData["Title"] = "Cart";
+    var index = 0;
+    bool hasOutOfStock = Model.Any(item => item.Quantity > item.Product.StockQuantity);
+    decimal subtotal = Model.Sum(item => item.Product.Price * item.Quantity);
+    decimal shipping = 0;
+    if (subtotal < 300) shipping = 4.99m;
+    decimal tax = subtotal * 0.1m; // giả sử thuế 10%
+    decimal discount = 0; // tùy thêm logic nếu có
+    decimal total = subtotal + shipping + tax - discount;
 }
 
 <body class="cart-page">
-
     <main class="main">
-
-        <!-- Page Title -->
         <div class="page-title light-background">
             <div class="container">
                 <nav class="breadcrumbs">
@@ -17,154 +24,127 @@
                 </nav>
                 <h1>Cart</h1>
             </div>
-        </div><!-- End Page Title -->
-        <!-- Cart Section -->
+        </div>
+
         <section id="cart" class="cart section">
-
-            <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-                <div class="row">
-                    <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
-                        <div class="cart-items">
-                            <div class="cart-header d-none d-lg-block">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-6">
-                                        <h5>Product</h5>
-                                    </div>
-                                    <div class="col-lg-2 text-center">
-                                        <h5>Price</h5>
-                                    </div>
-                                    <div class="col-lg-2 text-center">
-                                        <h5>Quantity</h5>
-                                    </div>
-                                    <div class="col-lg-2 text-center">
-                                        <h5>Total</h5>
+            <div class="container">
+                <form asp-action="UpdateQuantities" asp-controller="Cart" method="post">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="cart-items">
+                                <div class="cart-header d-none d-lg-block">
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-6"><h5>Product</h5></div>
+                                        <div class="col-lg-2 text-center"><h5>Price</h5></div>
+                                        <div class="col-lg-2 text-center"><h5>Quantity</h5></div>
+                                        <div class="col-lg-2 text-center"><h5>Total</h5></div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Cart Item 1 -->
-                            <div class="cart-item">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-6 col-12 mt-3 mt-lg-0 mb-lg-0 mb-3">
-                                        <div class="product-info d-flex align-items-center">
-                                            <div class="product-image">
-                                                <img src="~/img/product/product-1.webp" alt="Product" class="img-fluid" loading="lazy">
-                                            </div>
-                                            <div class="product-details">
-                                                <h6 class="product-title">Lorem ipsum dolor sit amet</h6>
-                                                <div class="product-meta">
-                                                    <span class="product-color">Color: Black</span>
-                                                    <span class="product-size">Size: M</span>
+                                @foreach (var item in Model)
+                                {
+                                    var isOutOfStock = item.Quantity > item.Product.StockQuantity;
+                                    <div class="cart-item">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-6 col-12 mt-3">
+                                                <div class="product-info d-flex align-items-center">
+                                                    <div class="product-image">
+                                                        <img src="~/img/product/@(item.Product.ImageUrl?.Split(',')[0] ?? "default-product.webp")" class="img-fluid" />
+                                                    </div>
+                                                    <div class="product-details">
+                                                        <h6 class="product-title">@item.Product.Name</h6>
+                                                        <div class="product-meta">
+                                                            <span>Color: @item.Product.Color</span>
+                                                            <span>Size: @item.Product.Size</span>
+                                                        </div>
+                                                        @if (isOutOfStock)
+                                                        {
+                                                            <div class="text-danger">Out of stock (Only @item.Product.StockQuantity left)</div>
+                                                        }
+                                                    </div>
                                                 </div>
-                                                <button class="remove-item" type="button">
+                                            </div>
+                                            <div class="col-lg-2 text-center">
+                                                <span>@item.Product.Price.ToString("C")</span>
+                                            </div>
+                                            <div class="col-lg-2 text-center">
+                                                <input type="hidden" name="items[@index].CartItemId" value="@item.Id" />
+                                                <input type="number" name="items[@index].Quantity" value="@item.Quantity"
+                                                       min="1" max="@item.Product.StockQuantity" class="form-control" @(isOutOfStock ? "disabled" : "") />
+                                            </div>
+                                            <div class="col-lg-2 text-center">
+                                                <span>@((item.Product.Price * item.Quantity).ToString("C"))</span><br />
+                                                <button type="submit"
+                                                        formaction="/Cart/RemoveItem"
+                                                        formmethod="post"
+                                                        name="cartItemId"
+                                                        value="@item.Id"
+                                                        class="btn btn-link p-0">
                                                     <i class="bi bi-trash"></i> Remove
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-2 col-12 mt-3 mt-lg-0 text-center">
-                                        <div class="price-tag">
-                                            <span class="current-price">$89.99</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-12 mt-3 mt-lg-0 text-center">
-                                        <div class="quantity-selector">
-                                            <button class="quantity-btn decrease">
-                                                <i class="bi bi-dash"></i>
-                                            </button>
-                                            <input type="number" class="quantity-input" value="1" min="1" max="10">
-                                            <button class="quantity-btn increase">
-                                                <i class="bi bi-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-12 mt-3 mt-lg-0 text-center">
-                                        <div class="item-total">
-                                            <span>$89.99</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> <!-- End -->
+                                    index++;
+                                }
 
+                                <div class="cart-actions text-end mt-3">
+                                    <button type="submit" class="btn btn-outline-heading" @(hasOutOfStock ? "disabled" : "")>
+                                        <i class="bi bi-arrow-clockwise"></i> Update Cart
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="300">
-                        <div class="cart-summary">
-                            <h4 class="summary-title">Order Summary</h4>
-
-                            <div class="summary-item">
-                                <span class="summary-label">Subtotal</span>
-                                <span class="summary-value">$269.96</span>
-                            </div>
-
-                            <div class="summary-item shipping-item">
-                                <span class="summary-label">Shipping</span>
-                                <div class="shipping-options">
-                                    <div class="form-check text-end">
-                                        <input class="form-check-input" type="radio" name="shipping" id="standard" checked="">
-                                        <label class="form-check-label" for="standard">
-                                            Standard Delivery - $4.99
-                                        </label>
-                                    </div>
-                                    <div class="form-check text-end">
-                                        <input class="form-check-input" type="radio" name="shipping" id="express">
-                                        <label class="form-check-label" for="express">
-                                            Express Delivery - $12.99
-                                        </label>
-                                    </div>
-                                    <div class="form-check text-end">
-                                        <input class="form-check-input" type="radio" name="shipping" id="free">
-                                        <label class="form-check-label" for="free">
-                                            Free Shipping (Orders over $300)
-                                        </label>
-                                    </div>
+                        <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="300">
+                            <div class="cart-summary">
+                                <h4 class="summary-title">Order Summary</h4>
+                                <div class="summary-item">
+                                    <span class="summary-label">Subtotal</span>
+                                    <span class="summary-value">@subtotal.ToString("C")</span>
                                 </div>
-                            </div>
+                                <div class="summary-item >
+                                    <span class="summary-label">Shipping</span>
+                                    <span class="summary-value">@shipping.ToString("C")</span>
 
-                            <div class="summary-item">
-                                <span class="summary-label">Tax</span>
-                                <span class="summary-value">$27.00</span>
-                            </div>
 
-                            <div class="summary-item discount">
-                                <span class="summary-label">Discount</span>
-                                <span class="summary-value">-$0.00</span>
-                            </div>
-
-                            <div class="summary-total">
-                                <span class="summary-label">Total</span>
-                                <span class="summary-value">$301.95</span>
-                            </div>
-
-                            <div class="checkout-button">
-                                <a href="#" class="btn btn-accent w-100">
-                                    Proceed to Checkout <i class="bi bi-arrow-right"></i>
-                                </a>
-                            </div>
-
-                            <div class="continue-shopping">
-                                <a href="#" class="btn btn-link w-100">
-                                    <i class="bi bi-arrow-left"></i> Continue Shopping
-                                </a>
-                            </div>
-
-                            <div class="payment-methods">
-                                <p class="payment-title">We Accept</p>
-                                <div class="payment-icons">
-                                    <i class="bi bi-credit-card"></i>
-                                    <i class="bi bi-paypal"></i>
-                                    <i class="bi bi-wallet2"></i>
-                                    <i class="bi bi-bank"></i>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Tax</span>
+                                    <span class="summary-value">@tax.ToString("C")</span>
+                                </div>
+                                <div class="summary-item discount">
+                                    <span class="summary-label">Discount</span>
+                                    <span class="summary-value">-@discount.ToString("C")</span>
+                                </div>
+                                <div class="summary-total">
+                                    <span class="summary-label">Total</span>
+                                    <span class="summary-value">@total.ToString("C")</span>
+                                </div>
+                                <div class="checkout-button">
+                                    <a href="#" class="btn btn-accent w-100">
+                                        Proceed to Checkout <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                                <div class="continue-shopping">
+                                    <a href="#" class="btn btn-link w-100">
+                                        <i class="bi bi-arrow-left"></i> Continue Shopping
+                                    </a>
+                                </div>
+                                <div class="payment-methods">
+                                    <p class="payment-title">We Accept</p>
+                                    <div class="payment-icons">
+                                        <i class="bi bi-credit-card"></i>
+                                        <i class="bi bi-paypal"></i>
+                                        <i class="bi bi-wallet2"></i>
+                                        <i class="bi bi-bank"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                </form>
             </div>
-
         </section><!-- /Cart Section -->
 
     </main>

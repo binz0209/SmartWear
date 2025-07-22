@@ -15,5 +15,7 @@ namespace Services.Interfaces
         Task UpdateCartAsync(Cart cart);
         Task DeleteCartAsync(Guid id);
         Task ClearCartAsync(Guid cartId);
+        Task<Cart> GetOrCreateCartAsync(Guid userId);
+        Task AddToCartAsync(Guid userId, Guid productId, int quantity);
     }
 }

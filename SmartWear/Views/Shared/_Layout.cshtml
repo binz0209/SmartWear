@@ -1,4 +1,29 @@
-﻿<!DOCTYPE html>
+﻿@using Business.Models
+@using Services
+@using System.Security.Claims
+@inject ICartService _cartService
+@{
+    int cartCount = 0;
+    decimal cartTotal = 0;
+    List<CartItem> cartItems = new();
+
+    if (User.Identity.IsAuthenticated)
+    {
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (Guid.TryParse(userIdStr, out var userId))
+        {
+            var cart = await _cartService.GetCartWithItemsByUserIdAsync(userId);
+            if (cart?.CartItems != null)
+            {
+                cartItems = cart.CartItems.ToList();
+                cartCount = cartItems.Sum(i => i.Quantity);
+                cartTotal = cartItems.Sum(i => i.Product.Price * i.Quantity);
+            }
+        }
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -103,9 +128,9 @@
                     </a>
 
                     <!-- Search -->
-                    <form class="search-form desktop-search-form">
+                    <form method="get" asp-controller="Product" asp-action="SearchResults" class="search-form desktop-search-form">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for products...">
+                            <input type="text" name="keyword" class="form-control" placeholder="Search for products..." required>
                             <button class="btn search-btn" type="submit">
                                 <i class="bi bi-search"></i>
                             </button>
@@ -194,61 +219,39 @@ else
                             <button class="header-action-btn" data-bs-toggle="dropdown">
                                 <i class="bi bi-cart3"></i>
                                 <span class="action-text d-none d-md-inline-block">Cart</span>
-                                <span class="badge">3</span>
+                                <span class="badge">@cartCount</span>
                             </button>
                             <div class="dropdown-menu cart-dropdown-menu">
                                 <div class="dropdown-header">
-                                    <h6>Shopping Cart (3)</h6>
+                                    <h6>Shopping Cart (@cartCount)</h6>
                                 </div>
                                 <div class="dropdown-body">
                                     <div class="cart-items">
-                                        <!-- Cart Item 1 -->
-                                        <div class="cart-item">
-                                            <div class="cart-item-image">
-                                                <img src="~/img/product/product-1.webp" alt="Product" class="img-fluid">
+                                        @if (User.Identity.IsAuthenticated && cartItems.Any()){
+                                        @foreach (var item in cartItems)
+                                        {
+                                            <div class="cart-item">
+                                                <div class="cart-item-image">
+                                                    <img src="~/img/product/@item.Product.ImageUrl" alt="@item.Product.Name" class="img-fluid" />
+                                                </div>
+                                                <div class="cart-item-content">
+                                                    <h6 class="cart-item-title">@item.Product.Name</h6>
+                                                    <div class="cart-item-meta">@item.Quantity × $@item.Product.Price</div>
+                                                </div>
+                                                <form method="post" asp-controller="Cart" asp-action="Remove" asp-route-id="@item.ProductId">
+                                                    <button class="cart-item-remove" type="submit">
+                                                        <i class="bi bi-x"></i>
+                                                    </button>
+                                                </form>
                                             </div>
-                                            <div class="cart-item-content">
-                                                <h6 class="cart-item-title">Wireless Headphones</h6>
-                                                <div class="cart-item-meta">1 × $89.99</div>
-                                            </div>
-                                            <button class="cart-item-remove">
-                                                <i class="bi bi-x"></i>
-                                            </button>
-                                        </div>
-
-                                        <!-- Cart Item 2 -->
-                                        <div class="cart-item">
-                                            <div class="cart-item-image">
-                                                <img src="~/img/product/product-2.webp" alt="Product" class="img-fluid">
-                                            </div>
-                                            <div class="cart-item-content">
-                                                <h6 class="cart-item-title">Smart Watch</h6>
-                                                <div class="cart-item-meta">1 × $129.99</div>
-                                            </div>
-                                            <button class="cart-item-remove">
-                                                <i class="bi bi-x"></i>
-                                            </button>
-                                        </div>
-
-                                        <!-- Cart Item 3 -->
-                                        <div class="cart-item">
-                                            <div class="cart-item-image">
-                                                <img src="~/img/product/product-3.webp" alt="Product" class="img-fluid">
-                                            </div>
-                                            <div class="cart-item-content">
-                                                <h6 class="cart-item-title">Bluetooth Speaker</h6>
-                                                <div class="cart-item-meta">1 × $59.99</div>
-                                            </div>
-                                            <button class="cart-item-remove">
-                                                <i class="bi bi-x"></i>
-                                            </button>
-                                        </div>
+                                        }
+                                        }
                                     </div>
                                 </div>
                                 <div class="dropdown-footer">
                                     <div class="cart-total">
                                         <span>Total:</span>
-                                        <span class="cart-total-price">$279.97</span>
+                                        <span class="cart-total-price">$@cartTotal</span>
                                     </div>
                                     <div class="cart-actions">
                                         <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-primary">View Cart</a>
@@ -274,7 +277,6 @@ else
                         <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                         <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                         <li><a asp-area="" asp-controller="Product" asp-action="Category">Category</a></li>
-                        <li><a asp-area="" asp-controller="Product" asp-action="ProductDetails">Product Details</a></li>
                         <li><a asp-controller="Cart" asp-action="Index">Cart</a></li>
                         <li><a asp-controller="Cart" asp-action="Checkout">Checkout</a></li>
                         <li class="dropdown">
@@ -897,9 +899,9 @@ else
         <!-- Mobile Search Form -->
         <div class="collapse" id="mobileSearch">
             <div class="container">
-                <form class="search-form">
+                <form method="get" asp-controller="Product" asp-action="SearchResults" class="search-form">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products...">
+                        <input type="text" name="keyword" class="form-control" placeholder="Search for products..." required>
                         <button class="btn search-btn" type="submit">
                             <i class="bi bi-search"></i>
                         </button>
@@ -1068,5 +1070,6 @@ else
     <script src="~/js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
     @Html.Partial("_ChatbotPopup")
+
 </body>
 </html>

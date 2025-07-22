@@ -10,6 +10,7 @@ using SmartWear.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
+using SmartWear.ViewModels;
 
 namespace SmartWear.Controllers
 {
@@ -21,9 +22,10 @@ namespace SmartWear.Controllers
         private readonly IAddressService _addressService;
         private readonly IPaymentService _paymentService;
         private readonly IOrderService _orderService;
+        private readonly ICartItemService _cartItemService;
 
         public CartController(ILogger<CartController> logger, ICartService cartService, IVnPayService vnPayService,
-            IAddressService addressService, IPaymentService paymentService, IOrderService orderService)
+            IAddressService addressService, IPaymentService paymentService, IOrderService orderService, ICartItemService cartItemService)
         {
             _logger = logger;
             _cartService = cartService;
@@ -31,6 +33,7 @@ namespace SmartWear.Controllers
             _addressService = addressService;
             _paymentService = paymentService;
             _orderService = orderService;
+            _cartItemService = cartItemService;
         }
 
         public IActionResult Index() => View(); // Cart
@@ -153,6 +156,35 @@ namespace SmartWear.Controllers
             HttpContext.Session.Remove("Address.City");
 
             return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(Guid productId, int quantity = 1)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return RedirectToAction("Login", "Account");
+
+            var userId = Guid.Parse(userIdClaim.Value);
+
+            await _cartService.AddToCartAsync(userId, productId, quantity);
+
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateQuantities(List<UpdateCartItemViewModel> items)
+        {
+            foreach (var item in items)
+            {
+                await _cartItemService.UpdateQuantityAsync(item.CartItemId, item.Quantity);
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> RemoveItem(Guid cartItemId)
+        {
+            await _cartItemService.DeleteCartItemAsync(cartItemId);
+            return RedirectToAction("Index");
         }
     }
 }

@@ -46,5 +46,9 @@ namespace Services
             return await _productRepository.FilterProductsByColorsAsync(colors);
         }
 
+        public async Task<IEnumerable<Product>> SearchProductsAsync(string keyword)
+        {
+            return await _productRepository.SearchProductsAsync(keyword);
+        }
     }
 }
