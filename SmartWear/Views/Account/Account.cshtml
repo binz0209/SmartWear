@@ -1,9 +1,13 @@
 ﻿@model SmartWear.ViewModels.UserProfileViewModel
+@{
+
+    var activeTab = ViewBag.ActiveTab ?? "orders";
+
+}
 
 <body class="account-page">
 
     <main class="main">
-
         <!-- Page Title -->
         <div class="page-title light-background">
             <div class="container">
@@ -44,24 +48,19 @@
                         <div class="profile-nav">
                             <ul class="nav flex-column" id="profileTabs" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders" aria-selected="true">
-                                        <i class="bi bi-box-seam"></i>
-                                        <span>Orders</span>
-                                        <span class="badge">1</span>
+                                    <button class="nav-link @(activeTab == "orders" ? "active" : "")"
+                                            id="orders-tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#orders"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="orders"
+                                            aria-selected="@(activeTab == "orders" ? "true" : "false")">
+                                        <i class="bi bi-box-seam"></i> Order
                                     </button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="wishlist-tab" data-bs-toggle="tab" data-bs-target="#wishlist" type="button" role="tab" aria-controls="wishlist" aria-selected="false">
-                                        <i class="bi bi-heart"></i>
-                                        <span>Wishlist</span>
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="payment-tab" data-bs-toggle="tab" data-bs-target="#payment" type="button" role="tab" aria-controls="payment" aria-selected="false">
-                                        <i class="bi bi-credit-card"></i>
-                                        <span>Payment methods</span>
-                                    </button>
-                                </li>
+                               
+                                
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">
                                         <i class="bi bi-star"></i>
@@ -75,11 +74,18 @@
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="addresses-tab" data-bs-toggle="tab" data-bs-target="#addresses" type="button" role="tab" aria-controls="addresses" aria-selected="false">
-                                        <i class="bi bi-geo-alt"></i>
-                                        <span>Addresses</span>
+                                    <button class="nav-link @(activeTab == "password" ? "active" : "")"
+                                            id="password-tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#password"
+                                            type="button"
+                                            role="tab"
+                                            aria-controls="password"
+                                            aria-selected="@(activeTab == "password" ? "true" : "false")">
+                                        <i class="bi bi-lock"></i> Change Password
                                     </button>
                                 </li>
+                                
                                 
                             </ul>
 
@@ -113,7 +119,10 @@
                     <div class="col-lg-9 profile-content" data-aos="fade-left" data-aos-delay="300">
                         <div class="tab-content" id="profileTabsContent">
                             <!-- Orders Tab -->
-                            <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                            <div class="tab-pane fade @(activeTab == "orders" ? "show active" : "")"
+                                 id="orders"
+                                 role="tabpanel"
+                                 aria-labelledby="orders-tab">
                                 <div class="tab-header">
                                     <h2>Orders</h2>
                                     <div class="tab-filters">
@@ -822,66 +831,8 @@
                                         </nav>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Wishlist Tab -->
-                            <div class="tab-pane fade" id="wishlist" role="tabpanel" aria-labelledby="wishlist-tab">
-                                <div class="tab-header">
-                                    <h2>Wishlist</h2>
-                                </div>
-                                <div class="wishlist-items">
-                                    <div class="row">
-                                        <!-- Wishlist Item 1 -->
-                                        <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="100">
-                                            <div class="wishlist-item">
-                                                <div class="wishlist-image">
-                                                    <img src="~/img/product/product-1.webp" alt="Product" loading="lazy">
-                                                    <button class="remove-wishlist" type="button">
-                                                        <i class="bi bi-x-lg"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="wishlist-content">
-                                                    <h5>Lorem ipsum dolor sit amet</h5>
-                                                    <div class="product-price">$129.99</div>
-                                                    <button class="btn btn-add-cart">Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div><!-- End Wishlist Item -->
-                                        <!-- Wishlist Item 2 -->
-                                        <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="200">
-                                            <div class="wishlist-item">
-                                                <div class="wishlist-image">
-                                                    <img src="~/img/product/product-2.webp" alt="Product" loading="lazy">
-                                                    <button class="remove-wishlist" type="button">
-                                                        <i class="bi bi-x-lg"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="wishlist-content">
-                                                    <h5>Consectetur adipiscing elit</h5>
-                                                    <div class="product-price">$89.50</div>
-                                                    <button class="btn btn-add-cart">Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div><!-- End Wishlist Item -->
-                                        <!-- Wishlist Item 3 -->
-                                        <div class="col-md-6 col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="300">
-                                            <div class="wishlist-item">
-                                                <div class="wishlist-image">
-                                                    <img src="~/img/product/product-3.webp" alt="Product" loading="lazy">
-                                                    <button class="remove-wishlist" type="button">
-                                                        <i class="bi bi-x-lg"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="wishlist-content">
-                                                    <h5>Sed do eiusmod tempor</h5>
-                                                    <div class="product-price">$199.99</div>
-                                                    <button class="btn btn-add-cart">Add to cart</button>
-                                                </div>
-                                            </div>
-                                        </div><!-- End Wishlist Item -->
-                                    </div>
-                                </div>
-                            </div>                            
+                            </div>                         
+                                                
 
                             <!-- Reviews Tab -->
                             <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
@@ -945,7 +896,10 @@
                             </div>
 
                             <!-- Personal Info Tab -->
-                            <div class="tab-pane fade" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                            <div class="tab-pane fade @(activeTab == "personal" ? "show active" : "")"
+                                 id="personal"
+                                 role="tabpanel"
+                                 aria-labelledby="personal-tab">
                                 <div class="tab-header">
                                     <h2>Personal Information</h2>
                                 </div>
@@ -953,6 +907,7 @@
                                     <form asp-action="UpdateProfile" method="post">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="Id" value="@Model.Id" />
+                                        <input type="hidden" name="activeTab" value="personal" />
 
                                         <div class="mb-3">
                                             <label for="username" class="form-label">Username</label>
@@ -962,7 +917,7 @@
                                         <div class="mb-3">
                                             <label for="email" class="form-label">Email</label>
                                             <input type="email" class="form-control" id="email" name="Email" value="@Model.Email">
-                                        </div>                                        
+                                        </div>
 
                                         <div class="text-end">
                                             <button type="submit" class="btn btn-save">Save Changes</button>
@@ -971,6 +926,58 @@
                                 </div>
                             </div>
 
+                            <!-- Change Password Tab -->
+                            <div class="tab-pane fade @(activeTab == "password" ? "show active" : "")"
+    id="password"
+    role="tabpanel"
+    aria-labelledby="password-tab">
+                                <div class="tab-header">
+                                    <h2>Change Password</h2>
+                                </div>                          
+
+                                <div class="personal-info-form" data-aos="fade-up" data-aos-delay="100">
+                                    <form id="changePasswordForm" asp-action="ChangePassword" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="Id" value="@Model.Id" />
+                                        <input type="hidden" name="activeTab" value="password" />
+
+                                        <div class="mb-3">
+                                            <label for="currentPassword" class="form-label">Current Password</label>
+                                            <input type="password" class="form-control" id="currentPassword" name="CurrentPassword" required />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="newPassword" class="form-label">New Password</label>
+                                            <input type="password" class="form-control" id="newPassword" name="NewPassword" required />
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                                            <input type="password" class="form-control" id="confirmNewPassword" name="ConfirmNewPassword" required />
+                                        </div>
+
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-save">Change Password</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Success & Error Alerts -->
+                            @if (TempData["Success"] != null)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            }
+                            @if (TempData["Error"] != null)
+                            {
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            }
                             <!-- Addresses Tab -->
                             <div class="tab-pane fade" id="addresses" role="tabpanel" aria-labelledby="addresses-tab">
                                 <div class="tab-header">
@@ -1055,5 +1062,33 @@
 
     <!-- Main JS File -->
     <script src="~/js/main.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#changePasswordForm').submit(function (e) {
+                e.preventDefault();
+
+                var form = $(this);
+                var formData = form.serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: form.attr('action'),
+                    data: formData,
+                    success: function (response) {
+                        var alertHtml = $(response).find('#changePasswordAlert').html();
+                        $('#changePasswordAlert').html(alertHtml);
+                    },
+                    error: function () {
+                        $('#changePasswordAlert').html(`
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i> Đã xảy ra lỗi. Vui lòng thử lại.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `);
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>

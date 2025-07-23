@@ -14,13 +14,16 @@ namespace SmartWear.Controllers
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
+        private readonly IEmailOtpService _otpService;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(IUserService userService, IRoleService roleService, ILogger<AccountController> logger)
+        public AccountController(IUserService userService, IRoleService roleService, ILogger<AccountController> logger, IEmailOtpService otpService)
         {
             _userService = userService;
             _roleService = roleService;
             _logger = logger;
+            _otpService = otpService;
+
         }
 
         [HttpGet]
@@ -30,7 +33,7 @@ namespace SmartWear.Controllers
             if (userId == null) return RedirectToAction("Login");
 
             var user = await _userService.GetUserByIdAsync(Guid.Parse(userId));
-            
+            ViewBag.ActiveTab = TempData["ActiveTab"]?.ToString() ?? "orders";
 
             var model = new UserProfileViewModel
             {
@@ -45,14 +48,10 @@ namespace SmartWear.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
         {
-            _logger.LogInformation("UpdateProfile action triggered");
+            TempData["ActiveTab"] = "personal";
 
             if (!ModelState.IsValid)
             {
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    _logger.LogWarning("Model error: " + error.ErrorMessage);
-                }
                 return View("Account", model);
             }
 
@@ -64,8 +63,7 @@ namespace SmartWear.Controllers
             }
 
             user.Username = model.Username;
-            user.Email = model.Email;                      
-
+            user.Email = model.Email;
             await _userService.UpdateUserAsync(user);
 
             TempData["Success"] = "Thông tin đã được cập nhật.";
@@ -256,6 +254,103 @@ namespace SmartWear.Controllers
             await HttpContext.SignInAsync("MyCookieAuth", claimsPrincipal);
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(UserProfileViewModel model)
+        {
+            TempData["ActiveTab"] = "password";
+
+
+            if (string.IsNullOrWhiteSpace(model.CurrentPassword) ||
+                string.IsNullOrWhiteSpace(model.NewPassword) ||
+                string.IsNullOrWhiteSpace(model.ConfirmNewPassword))
+            {
+                TempData["Error"] = "Vui lòng nhập đầy đủ thông tin.";
+                return RedirectToAction("Account");
+            }
+
+            if (model.NewPassword != model.ConfirmNewPassword)
+            {
+                TempData["Error"] = "Mật khẩu mới không khớp.";
+                return RedirectToAction("Account");
+            }
+
+            var user = await _userService.GetUserByIdAsync(model.Id);
+            if (user == null)
+            {
+                TempData["Error"] = "Không tìm thấy người dùng.";
+                return RedirectToAction("Account");
+            }
+
+            if (string.IsNullOrEmpty(user.PasswordHash) || !BCrypt.Net.BCrypt.Verify(model.CurrentPassword, user.PasswordHash))
+            {
+                TempData["Error"] = "Mật khẩu hiện tại không chính xác.";
+                return RedirectToAction("Account");
+            }
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+            await _userService.UpdateUserAsync(user);
+
+            TempData["Success"] = "Đổi mật khẩu thành công.";
+            return RedirectToAction("Account");
+        }
+
+        // GET: /Account/ForgotPassword
+        [HttpGet]
+        public IActionResult ForgotPassword()
+            => View(new ForgotPasswordViewModel());
+
+        // POST: /Account/ForgotPassword
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            var user = await _userService.GetByEmailAsync(vm.Email);
+            if (user != null)
+            {
+                await _otpService.SendOtpAsync(vm.Email);
+                TempData["Info"] = "Mã OTP đã được gửi vào email của bạn.";
+                return RedirectToAction("ResetPassword", new { email = vm.Email });
+            }
+
+            ModelState.AddModelError("", "Không tìm thấy email trong hệ thống.");
+            return View(vm);
+        }
+
+        // GET: /Account/ResetPassword?email=...
+        [HttpGet]
+        public IActionResult ResetPassword(string email)
+            => View(new ResetPasswordViewModel { Email = email });
+
+        // POST: /Account/ResetPassword
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            if (!await _otpService.ValidateOtpAsync(vm.Email, vm.OTP))
+            {
+                ModelState.AddModelError("OTP", "OTP không hợp lệ hoặc đã hết hạn.");
+                return View(vm);
+            }
+
+            var user = await _userService.GetByEmailAsync(vm.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Không tìm thấy người dùng.");
+                return View(vm);
+            }
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(vm.NewPassword);
+            await _userService.UpdateUserAsync(user);
+
+            TempData["Success"] = "Đổi mật khẩu thành công! Vui lòng đăng nhập lại.";
+            return RedirectToAction("Login");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
