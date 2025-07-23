@@ -50,5 +50,9 @@ namespace Services
         {
             return await _productRepository.SearchProductsAsync(keyword);
         }
+        public async Task DecreaseProductQuantityAsync(Guid productId, int quantity)
+        {
+            await _productRepository.DecreaseProductQuantityAsync(productId, quantity);
+        }
     }
 }

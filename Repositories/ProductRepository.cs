@@ -75,5 +75,18 @@ namespace Repository
                 .ToListAsync();
         }
 
+        public async Task DecreaseProductQuantityAsync(Guid productId, int quantity)
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
+            if (product == null) throw new Exception("Product not found");
+
+            if (product.StockQuantity < quantity)
+                throw new Exception("Insufficient stock");
+
+            product.StockQuantity -= quantity;
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

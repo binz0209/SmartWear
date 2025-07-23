@@ -14,5 +14,6 @@ namespace Repositories.Interfaces
         Task DeleteProductAsync(Guid id);
         Task<IEnumerable<Product>> FilterProductsByColorsAsync(List<string> colors);
         Task<IEnumerable<Product>> SearchProductsAsync(string keyword);
+        Task DecreaseProductQuantityAsync(Guid productId, int quantity);
     }
 }

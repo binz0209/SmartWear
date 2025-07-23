@@ -23,9 +23,11 @@ namespace SmartWear.Controllers
         private readonly IPaymentService _paymentService;
         private readonly IOrderService _orderService;
         private readonly ICartItemService _cartItemService;
+        private readonly IProductService _productService;
 
         public CartController(ILogger<CartController> logger, ICartService cartService, IVnPayService vnPayService,
-            IAddressService addressService, IPaymentService paymentService, IOrderService orderService, ICartItemService cartItemService)
+            IAddressService addressService, IPaymentService paymentService, IOrderService orderService, ICartItemService cartItemService,
+            IProductService productService)
         {
             _logger = logger;
             _cartService = cartService;
@@ -34,6 +36,7 @@ namespace SmartWear.Controllers
             _paymentService = paymentService;
             _orderService = orderService;
             _cartItemService = cartItemService;
+            _productService = productService;
         }
 
         public async Task<IActionResult> Index()
@@ -155,6 +158,11 @@ namespace SmartWear.Controllers
                 PaymentMethod = response.PaymentMethod
             };
             await _paymentService.AddPaymentAsync(payment);
+
+            foreach (var item in order.OrderItems)
+            {
+                await _productService.DecreaseProductQuantityAsync(item.ProductId, item.Quantity);
+            }
 
             await _cartService.ClearCartAsync(cart.Id);
 

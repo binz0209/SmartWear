@@ -40,11 +40,7 @@
                                 <span>S</span>
                             </div>
                             <div class="profile-info">
-                                <h4>Sarah Anderson</h4>
-                                <div class="profile-bonus">
-                                    <i class="bi bi-gift"></i>
-                                    <span>100 bonuses available</span>
-                                </div>
+                                <h4>@Model.Username</h4>
                             </div>
                         </div>
 
@@ -250,9 +246,9 @@
                                                             @foreach (var item in order.Items)
                                                             {
                                                                 <div class="order-item-detail d-flex align-items-center mb-2">
-                                                                    <div class="item-image me-2">
-                                                                        <img src="~/img/product-placeholder.png" alt="Product" loading="lazy" />
-                                                                    </div>
+                                                                    @* <div class="item-image me-2"> *@
+                                                                    @*     <img src="~/img/product-placeholder.png" alt="Product" loading="lazy" /> *@
+                                                                    @* </div> *@
                                                                     <div class="item-info flex-grow-1">
                                                                         <h6>@item.ProductName</h6>
                                                                         <div class="item-meta small text-muted">
