@@ -1069,8 +1069,7 @@ else
 
     <!-- Main JS File -->
     <script src="~/js/main.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
     @Html.Partial("_ChatbotPopup")
-
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

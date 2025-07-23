@@ -14,33 +14,108 @@ namespace SmartWear.Controllers
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
+        private readonly IOrderService _orderService;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(IUserService userService, IRoleService roleService, ILogger<AccountController> logger)
+        public AccountController(IUserService userService, IRoleService roleService, IOrderService orderService, ILogger<AccountController> logger)
         {
             _userService = userService;
             _roleService = roleService;
+            _orderService = orderService;
             _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> Account()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return RedirectToAction("Login");
+            // Lấy userId từ claims
+            var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdValue))
+                return RedirectToAction("Login");
 
-            var user = await _userService.GetUserByIdAsync(Guid.Parse(userId));
-            
+            var userId = Guid.Parse(userIdValue);
+
+            // Lấy thông tin user
+            var user = await _userService.GetUserByIdAsync(userId);
+            if (user == null)
+                return RedirectToAction("Login");
+
+            // Lấy tất cả order, bao gồm luôn OrderItems → Product, Payment, Address
+            var allOrders = await _orderService.GetAllOrdersAsync();
+
+            // Lọc ra chỉ các order của user này, và map vào OrderViewModel
+            var userOrders = allOrders
+                .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o =>
+                {
+                    // Tính subtotal
+                    var subtotal = o.OrderItems.Sum(oi => oi.UnitPrice * oi.Quantity);
+
+                    // Giả sử phí ship cố định hoặc do bạn tự tính
+                    decimal shipping = 0m;
+                    // Giả sử tax = 10% subtotal
+                    decimal tax = Math.Round(subtotal * 0.1m, 2);
+
+                    return new OrderViewModel
+                    {
+                        Id = o.Id,
+                        OrderDate = o.OrderDate,
+                        // giữ raw code nếu cần dùng cho CSS class
+                        Status = o.Status,
+                        // text-friendly status
+                        StatusDisplay = o.Status switch
+                        {
+                            "0" => "In progress",
+                            "1" => "Delivered",
+                            "2" => "Canceled",
+                            _ => o.Status
+                        },
+
+                        Subtotal = subtotal,
+                        Shipping = shipping,
+                        Tax = tax,
+                        Total = subtotal + shipping + tax,
+
+                        PaymentMethodDisplay = o.Payment?.PaymentMethod ?? "Chưa thanh toán",
+
+                        ProductThumbnails = o.OrderItems
+                                                   .Select(oi => oi.Product.ImageUrl ?? "/img/placeholder.png")
+                                                   .Take(3)
+                                                   .ToList(),
+
+                        Items = o.OrderItems
+                                                   .Select(oi => new OrderItemViewModel
+                                                   {
+                                                       ProductName = oi.Product.Name,
+                                                       SKU = oi.Product.Id.ToString()
+                                                                         .Substring(0, 8)
+                                                                         .ToUpper(),
+                                                       Quantity = oi.Quantity,
+                                                       UnitPrice = oi.UnitPrice
+                                                   })
+                                                   .ToList(),
+
+                        ShippingAddress = $"{o.Address.StreetAddress}, {o.Address.City}",
+                        ShippingMethod = "Standard Shipping"
+                    };
+                })
+                .ToList();
 
             var model = new UserProfileViewModel
             {
                 Id = user.Id,
                 Username = user.Username,
-                Email = user.Email                
+                Email = user.Email,
+                Orders = userOrders
             };
 
             return View(model);
         }
+
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
@@ -201,6 +276,32 @@ namespace SmartWear.Controllers
             await HttpContext.SignOutAsync("MyCookieAuth");
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelOrder(Guid id)
+        {
+            // 1) Lấy userId hiện tại
+            var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!Guid.TryParse(userIdValue, out var userId))
+                return Forbid();
+
+            // 2) Lấy đơn từ DB (khi này EF Context đã track order)
+            var order = await _orderService.GetOrderByIdAsync(id);
+            if (order == null || order.UserId != userId)
+                return NotFound();
+
+            // 3) Chỉ hủy khi đang 'In progress' (mã "0")
+            if (order.Status == "0")
+            {
+                order.Status = "2";            // 2 = Canceled
+                await _orderService.UpdateOrderAsync(order);
+            }
+
+            // 4) Redirect về lại trang Account
+            return RedirectToAction(nameof(Account));
+        }
+
 
         [HttpGet]
         public IActionResult GoogleLogin()

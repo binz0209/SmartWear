@@ -11,6 +11,8 @@ namespace SmartWear.ViewModels
 
         [Required, EmailAddress]
         public string Email { get; set; }
-       
+        public List<OrderViewModel> Orders { get; set; } = new List<OrderViewModel>();
     }
+
+
 }
