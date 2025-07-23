@@ -11,6 +11,10 @@ namespace SmartWear.ViewModels
 
         [Required, EmailAddress]
         public string Email { get; set; }
-       
+        // Thêm cho đổi mật khẩu
+        public string? CurrentPassword { get; set; }
+        public string? NewPassword { get; set; }
+        public string? ConfirmNewPassword { get; set; }
+
     }
 }

@@ -35,6 +35,7 @@ namespace SmartWear
             builder.Services.AddScoped<IProductReviewRepository, ProductReviewRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            
 
             // Add services to DI container
             builder.Services.AddScoped<IAddressService, AddressService>();
@@ -48,7 +49,9 @@ namespace SmartWear
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IProductReviewService, ProductReviewService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
-            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserService, UserService>();            
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<IEmailOtpService, EmailOtpService>();
 
 
             // Gemini DI

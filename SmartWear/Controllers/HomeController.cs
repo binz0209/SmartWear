@@ -28,6 +28,7 @@ namespace SmartWear.Controllers
             Name = p.Name,
             Price = p.Price,
             ImageUrl = p.ImageUrl,
+            CategoryName = p.Category?.Name, 
             Rating = p.ProductReviews.Any() ? (int)Math.Round(p.ProductReviews.Average(r => r.Rating)) : 0,
             ReviewCount = p.ProductReviews.Count
         }).ToList();
