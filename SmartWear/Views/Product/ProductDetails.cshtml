@@ -38,8 +38,8 @@
                                         var isFirst = true;
                                         foreach (var img in images)
                                         {
-                                            <div class="thumbnail-item @(isFirst ? "active" : "")" data-image="~/img/product/@img.Trim()">
-                                                <img src="~/img/product/@img.Trim()" alt="Product Thumbnail" class="img-fluid">
+                                            <div class="thumbnail-item @(isFirst ? "active" : "")" data-image="@img.Trim()">
+                                                <img src="@img.Trim()" alt="Product Thumbnail" class="img-fluid">
                                             </div>
                                             isFirst = false;
                                         }
@@ -57,9 +57,9 @@
                             <!-- Main Image -->
                             <div class="main-image-wrapper">
                                 <div class="image-zoom-container">
-                                    <a href="~/img/product/@Model.ImageUrl" class="glightbox" data-gallery="product-gallery">
-                                        <img src="@Url.Content("~/img/product/" + Model.ImageUrl)"
-                                             data-zoom="@Url.Content("~/img/product/" + Model.ImageUrl)"
+                                    <a href="@Model.ImageUrl" class="glightbox" data-gallery="product-gallery">
+                                        <img src="@Url.Content(Model.ImageUrl)"
+                                             data-zoom="@Url.Content(Model.ImageUrl)"
                                              class="img-fluid main-image drift-zoom"
                                              id="main-product-image"
                                              alt="@Model.Name" />
@@ -172,15 +172,28 @@
 
 
                                     <!-- Size Options -->
+                                    @{
+                                        var availableSizes = (Model.Size ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(s => s.Trim())
+                                        .ToList();
+
+                                        var allSizes = new List<string> { "S", "M", "L", "XL", "XXL" };
+                                    }
+
                                     <div class="option-group">
                                         <div class="option-header">
                                             <h6 class="option-title">Size</h6>
-                                            
                                         </div>
                                         <div class="size-options">
-                                            <div class="size-option @(Model.Size == "S" ? "active" : "")" data-size="S">S</div>
-                                            <div class="size-option @(Model.Size == "M" ? "active" : "")" data-size="M">M</div>
-                                            <div class="size-option @(Model.Size == "L" ? "active" : "")" data-size="L">L</div>
+                                            @foreach (var size in allSizes)
+                                            {
+                                                var isAvailable = availableSizes.Contains(size);
+                                                <div class="size-option @(isAvailable ? "" : "disabled")"
+                                                     data-size="@size"
+                                                     style="cursor:@(isAvailable ? "pointer" : "not-allowed"); opacity:@(isAvailable ? "1" : "0.4");">
+                                                    @size
+                                                </div>
+                                            }
                                         </div>
                                     </div>
 
@@ -641,6 +654,28 @@
             if (quantity > stock) {
                 e.preventDefault();
                 alert("Quantity must not exceed available stock.");
+            }
+        });
+    </script>
+
+    <script>
+        const sizeInput = document.getElementById("selectedSizeInput");
+
+        document.querySelectorAll(".size-option").forEach(option => {
+            option.addEventListener("click", () => {
+                if (option.classList.contains("disabled")) return;
+
+                document.querySelectorAll(".size-option").forEach(opt => opt.classList.remove("active"));
+                option.classList.add("active");
+                sizeInput.value = option.dataset.size;
+            });
+        });
+
+        // Đảm bảo có size trước khi submit
+        document.querySelector(".add-to-cart-btn").addEventListener("click", function (e) {
+            if (!sizeInput.value) {
+                e.preventDefault();
+                alert("Please select a size.");
             }
         });
     </script>
