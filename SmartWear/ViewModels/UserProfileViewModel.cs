@@ -15,6 +15,8 @@ namespace SmartWear.ViewModels
         public string? CurrentPassword { get; set; }
         public string? NewPassword { get; set; }
         public string? ConfirmNewPassword { get; set; }
-
+        public List<OrderViewModel> Orders { get; set; } = new List<OrderViewModel>();
     }
+
+
 }

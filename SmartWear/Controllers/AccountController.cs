@@ -16,34 +16,91 @@ namespace SmartWear.Controllers
         private readonly IRoleService _roleService;
         private readonly IEmailOtpService _otpService;
         private readonly ILogger<AccountController> _logger;
+        private readonly IOrderService _orderService;
 
-        public AccountController(IUserService userService, IRoleService roleService, ILogger<AccountController> logger, IEmailOtpService otpService)
+        public AccountController(IUserService userService, IRoleService roleService, ILogger<AccountController> logger, IEmailOtpService otpService, IOrderService orderService)
         {
             _userService = userService;
             _roleService = roleService;
+            _orderService = orderService;
             _logger = logger;
             _otpService = otpService;
-
         }
 
         [HttpGet]
         public async Task<IActionResult> Account()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return RedirectToAction("Login");
+            // Lấy userId từ claims
+            var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdValue))
+                return RedirectToAction("Login");
 
-            var user = await _userService.GetUserByIdAsync(Guid.Parse(userId));
+            var userId = Guid.Parse(userIdValue);
+            var user = await _userService.GetUserByIdAsync(userId);
+            if (user == null)
+                return RedirectToAction("Login");
+
             ViewBag.ActiveTab = TempData["ActiveTab"]?.ToString() ?? "orders";
+
+            var allOrders = await _orderService.GetAllOrdersAsync();
+
+            var userOrders = allOrders
+                .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o =>
+                {
+                    var subtotal = o.OrderItems.Sum(oi => oi.UnitPrice * oi.Quantity);
+                    decimal shipping = 0m;
+                    decimal tax = Math.Round(subtotal * 0.1m, 2);
+
+                    return new OrderViewModel
+                    {
+                        Id = o.Id,
+                        OrderDate = o.OrderDate,
+                        Status = o.Status,
+                        StatusDisplay = o.Status switch
+                        {
+                            "0" => "In progress",
+                            "1" => "Delivered",
+                            "2" => "Canceled",
+                            _ => o.Status
+                        },
+                        Subtotal = subtotal,
+                        Shipping = shipping,
+                        Tax = tax,
+                        Total = subtotal + shipping + tax,
+                        PaymentMethodDisplay = o.Payment?.PaymentMethod ?? "Chưa thanh toán",
+                        ProductThumbnails = o.OrderItems
+                                              .Select(oi => oi.Product.ImageUrl ?? "/img/placeholder.png")
+                                              .Take(3)
+                                              .ToList(),
+                        Items = o.OrderItems
+                                 .Select(oi => new OrderItemViewModel
+                                 {
+                                     ProductName = oi.Product.Name,
+                                     SKU = oi.Product.Id.ToString().Substring(0, 8).ToUpper(),
+                                     Quantity = oi.Quantity,
+                                     UnitPrice = oi.UnitPrice
+                                 })
+                                 .ToList(),
+                        ShippingAddress = $"{o.Address.StreetAddress}, {o.Address.City}",
+                        ShippingMethod = "Standard Shipping"
+                    };
+                })
+                .ToList();
 
             var model = new UserProfileViewModel
             {
                 Id = user.Id,
                 Username = user.Username,
-                Email = user.Email                
+                Email = user.Email,
+                Orders = userOrders
             };
 
             return View(model);
         }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
@@ -199,6 +256,32 @@ namespace SmartWear.Controllers
             await HttpContext.SignOutAsync("MyCookieAuth");
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelOrder(Guid id)
+        {
+            // 1) Lấy userId hiện tại
+            var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!Guid.TryParse(userIdValue, out var userId))
+                return Forbid();
+
+            // 2) Lấy đơn từ DB (khi này EF Context đã track order)
+            var order = await _orderService.GetOrderByIdAsync(id);
+            if (order == null || order.UserId != userId)
+                return NotFound();
+
+            // 3) Chỉ hủy khi đang 'In progress' (mã "0")
+            if (order.Status == "0")
+            {
+                order.Status = "2";            // 2 = Canceled
+                await _orderService.UpdateOrderAsync(order);
+            }
+
+            // 4) Redirect về lại trang Account
+            return RedirectToAction(nameof(Account));
+        }
+
 
         [HttpGet]
         public IActionResult GoogleLogin()

@@ -20,14 +20,19 @@ namespace Repository
 
         public async Task<IEnumerable<Order>> GetAllOrdersAsync()
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders
+               .Include(o => o.OrderItems)            // load OrderItems
+               .ThenInclude(oi => oi.Product)      // nếu bạn dùng Product trong từng item
+               .Include(o => o.Payment)               // load Payment nếu cần
+               .Include(o => o.Address)               // load Address nếu cần
+               .ToListAsync();
         }
 
         public async Task<Order> GetOrderByIdAsync(Guid id)
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)            // Bao gồm OrderItems
-                    .ThenInclude(oi => oi.Product)      // Bao gồm thông tin Product trong OrderItem
+                .ThenInclude(oi => oi.Product)      // Bao gồm thông tin Product trong OrderItem
                 .Include(o => o.Payment)               // Bao gồm Payment
                 .Include(o => o.Address)               // Bao gồm Address
                 .FirstOrDefaultAsync(o => o.Id == id); // Lấy Order theo ID
