@@ -38,16 +38,16 @@
                                         var isFirst = true;
                                         foreach (var img in images)
                                         {
-                                            <div class="thumbnail-item @(isFirst ? "active" : "")" data-image="~/img/product/@img.Trim()">
-                                                <img src="~/img/product/@img.Trim()" alt="Product Thumbnail" class="img-fluid">
+                                            <div class="thumbnail-item @(isFirst ? "active" : "")" data-image="@img.Trim()">
+                                                <img src="@img.Trim()" alt="Product Thumbnail" class="img-fluid">
                                             </div>
                                             isFirst = false;
                                         }
                                     }
                                     else
                                     {
-                                        <div class="thumbnail-item active" data-image="~/img/product/default-product.webp">
-                                            <img src="~/img/product/default-product.webp" alt="Product Thumbnail" class="img-fluid">
+                                        <div class="thumbnail-item active" data-image="default-product.webp">
+                                            <img src="default-product.webp" alt="Product Thumbnail" class="img-fluid">
                                         </div>
                                     }
                                 </div>
@@ -57,9 +57,9 @@
                             <!-- Main Image -->
                             <div class="main-image-wrapper">
                                 <div class="image-zoom-container">
-                                    <a href="~/img/product/@Model.ImageUrl" class="glightbox" data-gallery="product-gallery">
-                                        <img src="@Url.Content("~/img/product/" + Model.ImageUrl)"
-                                             data-zoom="@Url.Content("~/img/product/" + Model.ImageUrl)"
+                                    <a href="@Model.ImageUrl" class="glightbox" data-gallery="product-gallery">
+                                        <img src="@Url.Content("" + Model.ImageUrl)"
+                                             data-zoom="@Url.Content("" + Model.ImageUrl)"
                                              class="img-fluid main-image drift-zoom"
                                              id="main-product-image"
                                              alt="@Model.Name" />
@@ -261,7 +261,7 @@
                         <div class="container">
                             <div class="sticky-content">
                                 <div class="product-preview">
-                                    <img src="~/img/product/product-details-1.webp" alt="Product" class="product-thumbnail">
+                                    <img src="product-details-1.webp" alt="Product" class="product-thumbnail">
                                     <div class="product-info">
                                         <h5 class="product-title">Lorem Ipsum Wireless Headphones</h5>
                                         <div class="product-price">$249.99</div>

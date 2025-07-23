@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Admin Login";
+}
+
+<h2 class="text-center mt-4">Đăng nhập Admin</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+<form method="post" class="mt-3" style="max-width: 400px; margin: auto;">
+    <div class="form-group">
+        <label>Tài khoản</label>
+        <input type="text" name="username" class="form-control" required />
+    </div>
+    <div class="form-group mt-2">
+        <label>Mật khẩu</label>
+        <input type="password" name="password" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary w-100 mt-3">Đăng nhập</button>
+</form>

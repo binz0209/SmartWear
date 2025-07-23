@@ -90,7 +90,7 @@
                             <div class="col-6 col-lg-3">
                                 <div class="product-card" data-aos="zoom-in" data-aos-delay="@delay">
                                     <div class="product-image">
-                                        <img src="~/img/product/@(product.ImageUrl ?? "default-product.webp")" class="main-image img-fluid" alt="@product.Name">
+                                        <img src="@(product.ImageUrl ?? "default-product.webp")" class="main-image img-fluid" alt="@product.Name">
                                         <div class="product-overlay">
                                             <div class="product-actions">
                                                 <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })" class="action-btn" title="Quick View">

@@ -30,27 +30,34 @@ namespace Services
 
         public async Task<string> GetGeminiResponse(string userMessage)
         {
-            // Truy vấn các sản phẩm còn hàng
+            // Truy vấn các sản phẩm còn hàng, kèm danh mục
             var allProducts = await _context.Products
+                .Include(p => p.Category)
                 .Where(x => x.StockQuantity > 0)
                 .ToListAsync();
 
-            // Chuyển thông tin sản phẩm thành chuỗi mô tả cho prompt
-            var productText = string.Join("\n", allProducts.Select(p =>
-                $"* **{p.Name}**: {p.Description} Giá {p.Price}đ, còn {p.StockQuantity} chiếc"));
+            // Nhóm sản phẩm theo danh mục
+            var productsByCategory = allProducts
+                .GroupBy(p => p.Category?.Name ?? "Khác")
+                .Select(g => $"Danh mục: {g.Key}\n" +
+                    string.Join("\n", g.Select(p =>
+                        $"- {p.Name}: {p.Description} | Giá {p.Price}đ | Size: {p.Size} | Màu: {p.Color} | Còn {p.StockQuantity} chiếc")))
+                .ToList();
 
-            // Tạo prompt cho Gemini API, bao gồm câu hỏi của người dùng và danh sách sản phẩm
+            var productText = string.Join("\n\n", productsByCategory);
+
+            // Prompt chỉ tư vấn sản phẩm theo danh mục, size, màu
             var prompt = $@"
-Chào bạn! Bên mình có mấy món này đang được nhiều người ưa chuộng lắm nè:
+            Bạn là nhân viên shop quần áo SmartWear, tự xưng là em thôi, luôn thân thiện và nhiệt tình tư vấn cho khách hàng.
+            Dưới đây là các sản phẩm còn hàng, được phân theo danh mục:
 
-{productText}
+            {productText}
 
-Hãy dựa vào các sản phẩm có trong danh sách trên để trả lời câu hỏi sau:
+            Hãy dựa vào danh sách sản phẩm để tư vấn cho khách hàng theo câu hỏi sau. Luôn xưng là chủ shop và tư vấn như một người bán hàng chuyên nghiệp.
 
-Người dùng hỏi: {userMessage}
-";
+            Khách hỏi: {userMessage}
+            ";
 
-            // Gửi prompt vào Gemini API để lấy câu trả lời
             var apiEndpoint = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={_apiKey}";
 
             var requestBody = new
@@ -91,6 +98,7 @@ Người dùng hỏi: {userMessage}
             }
         }
 
+
         // Phương thức xử lý chuỗi trả về từ Gemini API
         private string ProcessResponseText(string responseText)
         {
@@ -102,7 +110,5 @@ Người dùng hỏi: {userMessage}
 
             return responseText;
         }
-
-
     }
 }
