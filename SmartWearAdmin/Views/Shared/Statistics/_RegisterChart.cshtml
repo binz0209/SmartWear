@@ -1,0 +1,83 @@
+﻿<div style="max-width: 500px; margin: 0 auto; text-align: center;">
+    <h4 class="mb-3">Register Summary</h4>
+
+    <select id="periodSelect" class="form-control mb-3" style="width: 300px; margin: 0 auto;">
+        <option disabled selected>-- Select Time --</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+        <option value="year">This Year</option>
+    </select>
+
+    <canvas id="registerChart" height="200"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let registerChart;
+
+    registerChart = new Chart(document.getElementById('registerChart'), {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Number Of Register',
+                data: [],
+                backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                borderColor: 'rgba(255, 206, 86, 1)',
+                borderWidth: 1,
+                barThickness: 40
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0,
+                    max: 10
+                }
+            }
+        }
+    });
+
+    document.getElementById('periodSelect').addEventListener('change', function () {
+        const period = this.value;
+        if (!period) return;
+
+        fetch(`/Statistics/GetRegisterChartData?period=${period}`)
+            .then(res => res.json())
+            .then(data => {
+                const labels = Object.keys(data);
+                const counts = Object.values(data);
+
+                if (registerChart) registerChart.destroy();
+
+                let yMax = 10;
+                if (period === "month") yMax = 20;
+                else if (period === "year") yMax = 50;
+
+                registerChart = new Chart(document.getElementById('registerChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Number Of Register',
+                            data: counts,
+                            backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                            borderColor: 'rgba(255, 206, 86, 1)',
+                            borderWidth: 1,
+                            barThickness: 40
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                precision: 0,
+                                max: yMax
+                            }
+                        }
+                    }
+                });
+            });
+    });
+</script>

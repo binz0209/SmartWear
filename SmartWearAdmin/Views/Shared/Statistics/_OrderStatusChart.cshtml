@@ -1,0 +1,39 @@
+﻿<div style="max-width: 500px; margin: 0 auto; text-align: center;">
+    <h4 class="mb-4">Order Status Summary</h4>
+    <canvas id="statusChart" height="250"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let statusChart;
+
+    fetch('/Statistics/GetOrderStatusCounts')
+        .then(res => res.json())
+        .then(data => {
+            const statusLabels = data.map(x => x.status);
+            const counts = data.map(x => x.count);
+
+            statusChart = new Chart(document.getElementById('statusChart'), {
+                type: 'bar',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        label: 'Number of Orders',
+                        data: counts,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        barThickness: 40
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0
+                        }
+                    }
+                }
+            });
+        });
+</script>

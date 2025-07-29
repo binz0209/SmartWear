@@ -2,18 +2,15 @@
     var categories = ViewBag.Categories as IEnumerable<dynamic> ?? new List<dynamic>();
 }
 
-<h3>Products by Category</h3>
+<div style="max-width: 500px; margin: 0 auto; text-align: center;" class="mb-4">
+    <h5 class="mb-3" style="font-size:18px;" >Products by Category:</h5>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <select id="categorySelect" class="form-control" style="width: 300px;">
+    <select id="categorySelect" class="form-control mb-3" style="width: 300px; margin: 0 auto;">
         <option disabled selected>-- Select Category --</option>
-        @foreach (var cat in categories)
-        {
-            <option value="@cat.Id">@cat.Name</option>
-        }
     </select>
 
-    <a href="/Products/Index" class="btn btn-primary ml-3">View More</a>
+
+    <a href="/Products/Index" class="btn btn-primary" style="margin-top: 10px;">View More</a>
 </div>
 
 <div style="max-width: 500px; margin: 0 auto;">
@@ -23,6 +20,28 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     let chart;
+    chart = new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Quantity In Stock',
+                data: [],
+                backgroundColor: 'rgba(100, 149, 237, 0.7)',
+                borderWidth: 1,
+                barThickness: 40
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0,
+                    max: 200
+                }
+            }
+        }
+    });
 
     fetch('/Statistics/GetCategories')
         .then(res => res.json())
@@ -45,29 +64,9 @@
                 const labels = data.map(x => x.productName);
                 const quantities = data.map(x => x.stockQuantity);
 
-                if (chart) chart.destroy();
-
-                chart = new Chart(document.getElementById('barChart'), {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Quantity In Stock',
-                            data: quantities,
-                            borderWidth: 1,
-                            barThickness: 40
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                precision: 0,
-                                max: 200
-                            }
-                        }
-                    }
-                });
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = quantities;
+                chart.update();
             });
     });
 </script>
