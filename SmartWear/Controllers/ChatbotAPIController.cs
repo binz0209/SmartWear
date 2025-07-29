@@ -5,6 +5,8 @@ using Services.Interfaces;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using SmartWear.Hubs;
 
 namespace SmartWear.Controllers
 {
@@ -14,11 +16,13 @@ namespace SmartWear.Controllers
     {
         private readonly GeminiClientService _geminiClientService;
         private readonly IChatLogService _chatLogService;
+        private readonly IHubContext<ChatHub> _hubContext;
 
-        public ChatbotApiController(GeminiClientService geminiClientService, IChatLogService chatLogService)
+        public ChatbotApiController(GeminiClientService geminiClientService, IChatLogService chatLogService, IHubContext<ChatHub> hubContext)
         {
             _geminiClientService = geminiClientService;
             _chatLogService = chatLogService;
+            _hubContext = hubContext;
         }
 
         [HttpGet("ask")]
@@ -27,50 +31,42 @@ namespace SmartWear.Controllers
             if (string.IsNullOrWhiteSpace(question))
                 return BadRequest("Thiếu câu hỏi.");
 
-            // Gọi GeminiClientService để trả lời câu hỏi của người dùng
+            // Gửi ngay tin nhắn user lên các client (realtime)
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", "user", question);
+
+            // Lấy phản hồi bot
             var response = await _geminiClientService.GetGeminiResponse(question);
 
+            // Gửi phản hồi bot về client
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", "bot", response);
 
-            // Tạo đối tượng ChatLog
+            // Lưu chat log nếu có user login
             var userIdClaims = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            // Nếu null thì không lưu trong cơ sở dữ liệu
-            if (userIdClaims == null)
-                return Ok(new { reply = response });
-
-            var chatLog = new ChatLog
+            if (userIdClaims != null)
             {
-                Id = Guid.NewGuid(),
-                UserId = Guid.Parse(userIdClaims.Value),
-                UserQuestion = question,
-                BotResponse = response,
-                CreatedOn = DateTime.Now
-            };
+                var chatLog = new ChatLog
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = Guid.Parse(userIdClaims.Value),
+                    UserQuestion = question,
+                    BotResponse = response,
+                    CreatedOn = DateTime.Now
+                };
+                await _chatLogService.AddChatLogAsync(chatLog);
+            }
 
-            // In ra Console để kiểm tra dữ liệu
-            Console.WriteLine("User Question: " + chatLog.UserQuestion);
-            Console.WriteLine("Bot Response: " + chatLog.BotResponse);
-
-            // Lưu chat log vào cơ sở dữ liệu
-            await _chatLogService.AddChatLogAsync(chatLog);
-
-            // Trả về phản hồi cho frontend
             return Ok(new { reply = response });
         }
 
         [HttpGet("history")]
         public async Task<IActionResult> GetChatHistory()
         {
-            // get currently logged-in user ID from claims
             var userIdClaims = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrEmpty(userIdClaims?.Value))
                 return Unauthorized("Bạn cần đăng nhập để xem lịch sử trò chuyện.");
 
             var userId = Guid.Parse(userIdClaims.Value);
-
-            // Console print
-            Console.WriteLine("User ID: " + userId);
-
             var chatLogs = await _chatLogService.GetChatLogsByUserIdAsync(userId);
 
             var history = chatLogs.Select(log => new
@@ -81,6 +77,5 @@ namespace SmartWear.Controllers
 
             return Ok(history);
         }
-
     }
 }

@@ -1,7 +1,10 @@
 ﻿@model SmartWear.ViewModels.ProductDetailsViewModel
 @{
     ViewData["Title"] = "Product Details";
+}
 
+@functions{
+    public static string ToVnd(decimal price) => price.ToString("#,0") + " VND";
 }
 
 <body class="product-details-page">
@@ -52,7 +55,6 @@
                                     }
                                 </div>
                             </div>
-
 
                             <!-- Main Image -->
                             <div class="main-image-wrapper">
@@ -124,11 +126,10 @@
                                     <a href="#reviews" class="rating-count">@Model.ReviewCount Reviews</a>
                                 </div>
 
-
                                 <!-- Product Price -->
                                 <div class="product-price-container">
                                     <div class="price-wrapper">
-                                        <span class="current-price">@Model.Price.ToString("C")</span>
+                                        <span class="current-price">@ToVnd(Model.Price)</span>
                                     </div>
 
                                     @if (Model.StockQuantity > 0)
@@ -147,12 +148,10 @@
                                     }
                                 </div>
 
-
                                 <!-- Product Description -->
                                 <div class="product-short-description">
                                     <p>@(!string.IsNullOrEmpty(Model.Description) ? Model.Description : "No description available.")</p>
                                 </div>
-
 
                                 <!-- Product Options -->
                                 <div class="product-options">
@@ -160,7 +159,6 @@
                                     <div class="option-group">
                                         <div class="option-header">
                                             <h6 class="option-title">Color</h6>
-                                           
                                         </div>
                                         <div class="color-options">
                                             <div class="color-option active" data-color="@Model.Color"
@@ -169,7 +167,6 @@
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <!-- Size Options -->
                                     @{
@@ -247,7 +244,7 @@
                                         <i class="bi bi-truck"></i>
                                         <div>
                                             <h6>Free Shipping</h6>
-                                            <p>On orders over $50</p>
+                                            <p>On orders over 1,000,000 VND</p>
                                         </div>
                                     </div>
                                     <div class="delivery-option">
@@ -274,10 +271,10 @@
                         <div class="container">
                             <div class="sticky-content">
                                 <div class="product-preview">
-                                    <img src="product-details-1.webp" alt="Product" class="product-thumbnail">
+                                    <img src="@Model.ImageUrl" alt="Product" class="product-thumbnail">
                                     <div class="product-info">
-                                        <h5 class="product-title">Lorem Ipsum Wireless Headphones</h5>
-                                        <div class="product-price">$249.99</div>
+                                        <h5 class="product-title">@Model.Name</h5>
+                                        <div class="product-price">@ToVnd(Model.Price)</div>
                                     </div>
                                 </div>
                                 <div class="sticky-actions">

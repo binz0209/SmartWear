@@ -204,39 +204,35 @@
     <img src="~/content/assets/img/chatbot/chatbot.png" alt="Chatbot" style="width: 45px; height: 45px;" />
 </button>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
 <script>
-    document.addEventListener("keydown", function (event) {
-        const popup = document.getElementById("chatbot-popup");
-        const isVisible = popup.style.display === "flex";
+    // Khởi tạo kết nối SignalR
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
 
-        if (isVisible && event.key === "Escape") {
-            toggleChatbot(); // Đóng chat
+    // Xử lý nhận tin nhắn từ server (user hoặc bot)
+    connection.on("ReceiveMessage", (user, message) => {
+        const chatBox = document.getElementById("chat-box");
+        if (user === "user") {
+            chatBox.innerHTML += `<div class="chat-message user">${message}</div>`;
+        } else {
+            chatBox.innerHTML += `<div class="chat-message bot">${message}</div>`;
         }
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
 
-        // Nếu click chuột trái hoặc phải ra ngoài chatbot thì đóng chatbot
+    connection.start().catch(err => console.error("SignalR error: ", err));
 
-        if (isVisible && event.key === "Enter") {
-            const active = document.activeElement;
-            if (active && active.id === "userMessage") {
-                event.preventDefault();
-                sendMessage();
-            }
+    // Bắt sự kiện Enter để gửi
+    document.getElementById("userMessage").addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
         }
     });
 
-    document.addEventListener('click', function (event) {
-        const popup = document.getElementById('chatbot-popup');
-        const openBtn = document.getElementById('chat-open-btn');
-
-        if (popup.style.display === 'flex') {
-            const isClickInside = popup.contains(event.target) || openBtn.contains(event.target);
-            if (!isClickInside) {
-                toggleChatbot(); // Đóng chat
-            }
-        }
-    });
-
-
+    // Toggle popup chat và load lịch sử
     async function toggleChatbot() {
         const popup = document.getElementById("chatbot-popup");
         const openBtn = document.getElementById("chat-open-btn");
@@ -245,64 +241,66 @@
             popup.style.display = "flex";
             openBtn.style.display = "none";
 
-            // 🔹 Load lịch sử chat
+            // Load lịch sử chat
             const chatBox = document.getElementById("chat-box");
             chatBox.innerHTML = "";
-
             try {
                 const response = await fetch('/api/chatbotapi/history');
                 const history = await response.json();
-
                 history.forEach(log => {
                     chatBox.innerHTML += `<div class="chat-message user">${log.question}</div>`;
                     chatBox.innerHTML += `<div class="chat-message bot">${log.response}</div>`;
                 });
-
                 chatBox.scrollTop = chatBox.scrollHeight;
             } catch (error) {
                 console.error("Lỗi tải lịch sử:", error);
             }
-
         } else {
             popup.style.display = "none";
             openBtn.style.display = "block";
         }
     }
 
+    // Gửi tin nhắn: chỉ gọi API, backend sẽ broadcast qua SignalR
     async function sendMessage() {
         const msg = document.getElementById("userMessage").value;
         if (!msg) return;
 
-        const chatBox = document.getElementById("chat-box");
-        chatBox.innerHTML += `<div class="chat-message user">${msg}</div>`;
-
-        const loadingId = "loading-" + Date.now();
-        chatBox.innerHTML += `<div id="${loadingId}" class="chat-message bot"><em>...</em></div>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
-
         document.getElementById("userMessage").value = "";
 
-        const response = await fetch('/api/chatbotapi/ask?question=' + encodeURIComponent(msg));
-        const data = await response.json();
 
-        const loadingDiv = document.getElementById(loadingId);
-        if (loadingDiv) {
-            loadingDiv.innerHTML = `${data.reply}`;
-        }
-
-        chatBox.scrollTop = chatBox.scrollHeight;
+        // Chỉ gọi API, không gửi lên SignalR trực tiếp!
+        await fetch('/api/chatbotapi/ask?question=' + encodeURIComponent(msg));
     }
 
-    // Hiển thị khung giới thiệu tự động khi trang được load
+    // Đóng chat khi nhấn Esc hoặc click ra ngoài
+    document.addEventListener("keydown", function (event) {
+        const popup = document.getElementById("chatbot-popup");
+        const isVisible = popup.style.display === "flex";
+        if (isVisible && event.key === "Escape") {
+            toggleChatbot();
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        const popup = document.getElementById('chatbot-popup');
+        const openBtn = document.getElementById('chat-open-btn');
+        if (popup.style.display === 'flex') {
+            const isClickInside = popup.contains(event.target) || openBtn.contains(event.target);
+            if (!isClickInside) {
+                toggleChatbot();
+            }
+        }
+    });
+
+    // Hiển thị intro khi load trang
     window.onload = function () {
         const chatIntro = document.getElementById('chat-intro');
         chatIntro.style.opacity = 1;
         chatIntro.style.visibility = 'visible';
-
-        // Tắt khung sau 3 giây
         setTimeout(function () {
             chatIntro.style.opacity = 0;
             chatIntro.style.visibility = 'hidden';
-        }, 3000); // 3 giây
+        }, 3000);
     }
 </script>

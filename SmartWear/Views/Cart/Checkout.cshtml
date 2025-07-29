@@ -226,7 +226,7 @@
                             <div class="order-summary-content">
                                 <div class="order-items">
                                     @{
-                                        var subtotal = Model.Sum(i => i.Quantity * i.Product.Price);
+                                        subtotal = Model.Sum(i => i.Quantity * i.Product.Price);
                                     }
 
                                     @foreach (var item in Model)

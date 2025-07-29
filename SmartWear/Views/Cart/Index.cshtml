@@ -12,6 +12,10 @@
     decimal total = subtotal + shipping + tax - discount;
 }
 
+@functions {
+    public static string ToVnd(decimal price) => price.ToString("#,0") + " VND";
+}
+
 <body class="cart-page">
     <main class="main">
         <div class="page-title light-background">
@@ -65,7 +69,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-lg-2 text-center">
-                                                <span>@item.Product.Price.ToString("C")</span>
+                                                <span>@ToVnd(item.Product.Price)</span>
                                             </div>
                                             <div class="col-lg-2 text-center">
                                                 <input type="hidden" name="items[@index].CartItemId" value="@item.Id" />
@@ -73,7 +77,7 @@
                                                        min="1" max="@item.Product.StockQuantity" class="form-control" @(isOutOfStock ? "disabled" : "") />
                                             </div>
                                             <div class="col-lg-2 text-center">
-                                                <span>@((item.Product.Price * item.Quantity).ToString("C"))</span><br />
+                                                <span>@ToVnd(item.Product.Price * item.Quantity)</span><br />
                                                 <button type="submit"
                                                         formaction="/Cart/RemoveItem"
                                                         formmethod="post"
@@ -101,25 +105,23 @@
                                 <h4 class="summary-title">Order Summary</h4>
                                 <div class="summary-item">
                                     <span class="summary-label">Subtotal</span>
-                                    <span class="summary-value">@subtotal.ToString("C")</span>
+                                    <span class="summary-value">@ToVnd(subtotal)</span>
                                 </div>
-                                <div class="summary-item >
+                                <div class="summary-item">
                                     <span class="summary-label">Shipping</span>
-                                    <span class="summary-value">@shipping.ToString("C")</span>
-                                    
-                                   
+                                    <span class="summary-value">@ToVnd(shipping)</span>
                                 </div>
                                 <div class="summary-item">
                                     <span class="summary-label">Tax</span>
-                                    <span class="summary-value">@tax.ToString("C")</span>
+                                    <span class="summary-value">@ToVnd(tax)</span>
                                 </div>
                                 <div class="summary-item discount">
                                     <span class="summary-label">Discount</span>
-                                    <span class="summary-value">-@discount.ToString("C")</span>
+                                    <span class="summary-value">-@ToVnd(discount)</span>
                                 </div>
                                 <div class="summary-total">
                                     <span class="summary-label">Total</span>
-                                    <span class="summary-value">@total.ToString("C")</span>
+                                    <span class="summary-value">@ToVnd(total)</span>
                                 </div>
                                 <div class="checkout-button">
                                     <a href="#" class="btn btn-accent w-100">

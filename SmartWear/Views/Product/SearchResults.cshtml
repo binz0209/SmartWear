@@ -2,15 +2,19 @@
 @{
     ViewData["Title"] = "Search Results";
 }
+
+@functions {
+    // Helper: format tiền kiểu VND
+    public static string ToVnd(decimal price) => price.ToString("#,0") + " VND";
+}
+
 <body class="search-results-page">
 
     <main class="main">
 
         <!-- Search Results Header Section -->
         <section id="search-results-header" class="search-results-header section">
-
             <div class="container" data-aos="fade-up" data-aos-delay="100">
-
                 <div class="search-results-header">
                     <div class="row align-items-center">
                         <div class="col-lg-6 mb-4 mb-lg-0">
@@ -72,17 +76,13 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </section><!-- /Search Results Header Section -->
         <!-- Search Product List Section -->
         <section id="search-product-list" class="search-product-list section">
-
             <div class="container" data-aos="fade-up" data-aos-delay="100">
-
                 <div class="row g-4">
-                     @if (Model.Products != null && Model.Products.Any())
+                    @if (Model.Products != null && Model.Products.Any())
                     {
                         var delay = 0;
                         foreach (var product in Model.Products)
@@ -108,7 +108,7 @@
                                             <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })">@product.Name</a>
                                         </h4>
                                         <div class="product-meta">
-                                            <div class="product-price">@product.Price.ToString("C")</div>
+                                            <div class="product-price">@ToVnd(product.Price)</div>
                                             <div class="product-rating">
                                                 @for (int i = 0; i < product.Rating; i++)
                                                 {
@@ -133,16 +133,11 @@
                             <p>No products found.</p>
                         </div>
                     }
-                   
-
                 </div>
-
             </div>
-
         </section><!-- /Search Product List Section -->
         <!-- Category Pagination Section -->
         <section id="category-pagination" class="category-pagination section">
-
             <div class="container">
                 <nav class="d-flex justify-content-center" aria-label="Page navigation">
                     <ul>
@@ -169,18 +164,13 @@
                     </ul>
                 </nav>
             </div>
-
         </section><!-- /Category Pagination Section -->
 
     </main>
 
     <!-- Scroll Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-    <!-- Preloader -->
     <div id="preloader"></div>
-
-    <!-- Vendor JS Files -->
     <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/vendor/php-email-form/validate.js"></script>
     <script src="~/vendor/swiper/swiper-bundle.min.js"></script>
@@ -190,8 +180,6 @@
     <script src="~/vendor/glightbox/js/glightbox.min.js"></script>
     <script src="~/vendor/drift-zoom/Drift.min.js"></script>
     <script src="~/vendor/purecounter/purecounter_vanilla.js"></script>
-
-    <!-- Main JS File -->
     <script src="~/js/main.js"></script>
     <script>
         function onSortChange() {
@@ -205,5 +193,4 @@
             window.location.href = url.toString();
         }
     </script>
-
 </body>

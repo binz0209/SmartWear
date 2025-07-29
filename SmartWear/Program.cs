@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Services.VnPay;
 using Repositories.Interfaces;
 using Services.Interfaces;
+using SmartWear.Hubs;
 
 namespace SmartWear
 {
@@ -53,6 +54,8 @@ namespace SmartWear
             builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddScoped<IEmailOtpService, EmailOtpService>();
 
+            // SignalR service
+            builder.Services.AddSignalR();
 
             // Gemini DI
             builder.Services.AddScoped<GeminiClientService>();
@@ -118,6 +121,9 @@ namespace SmartWear
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            // Map Hub SignalR
+            app.MapHub<ChatHub>("/chathub");
 
             app.Run();
         }

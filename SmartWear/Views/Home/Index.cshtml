@@ -4,6 +4,13 @@
     ViewData["Title"] = "Home Page";
 }
 
+@functions {
+    public static string ToVnd(decimal price)
+    {
+        return price.ToString("#,0") + " VND";
+    }
+}
+
 <body class="index-page">
     <main class="main">
         <!-- Hero Section -->
@@ -50,7 +57,7 @@
                                                 </div>
                                                 <div class="product-info">
                                                     <h4>Modern Style</h4>
-                                                    <span class="price">$79.99</span>
+                                                    <span class="price">79,990 VND</span>
                                                 </div>
                                             </div>
                                             <div class="product-item" data-aos="fade-up" data-aos-delay="400">
@@ -59,7 +66,7 @@
                                                 </div>
                                                 <div class="product-info">
                                                     <h4>Casual Collection</h4>
-                                                    <span class="price">$64.99</span>
+                                                    <span class="price">64,990 VND</span>
                                                 </div>
                                             </div>
                                             <div class="product-item" data-aos="fade-up" data-aos-delay="500">
@@ -68,7 +75,7 @@
                                                 </div>
                                                 <div class="product-info">
                                                     <h4>Premium Design</h4>
-                                                    <span class="price">$89.99</span>
+                                                    <span class="price">89,990 VND</span>
                                                 </div>
                                             </div>
                                             <div class="product-item" data-aos="fade-up" data-aos-delay="600">
@@ -77,7 +84,7 @@
                                                 </div>
                                                 <div class="product-info">
                                                     <h4>Elegant Series</h4>
-                                                    <span class="price">$74.99</span>
+                                                    <span class="price">74,990 VND</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -133,8 +140,8 @@
                                             <div class="tag-content">
                                                 <span class="tag-label">Best Seller</span>
                                                 <span class="tag-price">
-                                                    <span class="old-price">$129.99</span>
-                                                    <span class="new-price">$64.99</span>
+                                                    <span class="old-price">129,990 VND</span>
+                                                    <span class="new-price">64,990 VND</span>
                                                 </span>
                                             </div>
                                         </div>
@@ -205,8 +212,6 @@
                 </div>
             </div>
         </section><!-- /Hero Section -->
-
-
         <!-- Welcome Section -->
         <section id="best-sellers" class="best-sellers section">
             <div class="container section-title" data-aos="fade-up">
@@ -251,7 +256,7 @@
                                 <div class="product-info">
                                     <h5 class="product-title"><a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })">@product.Name</a></h5>
                                     <div class="product-price">
-                                        <span class="current-price">@product.Price.ToString("C")</span>
+                                        <span class="current-price">@ToVnd(product.Price)</span>
                                     </div>
                                     <div class="product-rating">
                                         @for (int i = 0; i < product.Rating; i++)

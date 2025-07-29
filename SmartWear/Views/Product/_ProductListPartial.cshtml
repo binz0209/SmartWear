@@ -22,20 +22,30 @@
                     </div>
                     <div class="product-content">
                         <div class="product-details">
-                            <h3 class="product-title">@product.Name</h3>
+                            <h3 class="product-title">
+                                <a href="@Url.Action("ProductDetails", "Product", new { id = product.Id })">
+                                    @product.Name
+                                </a>
+                            </h3>
                             <div class="product-price">
-                                <span>$@product.Price</span>
+                                <span>@product.Price.ToString("N0") VND</span>
                             </div>
                         </div>
                         <div class="product-rating-container">
                             <div class="rating-stars">
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star"></i>
+                                @{
+                                    int rating = product.Rating;
+                                    for (int i = 0; i < rating; i++)
+                                    {
+                                        <i class="bi bi-star-fill"></i>
+                                    }
+                                    for (int i = rating; i < 5; i++)
+                                    {
+                                        <i class="bi bi-star"></i>
+                                    }
+                                }
                             </div>
-                            <span class="rating-number">4.0</span>
+                            <span class="rating-number">@product.Rating.ToString("0.0")</span>
                         </div>
                         <div class="product-color-options">
                             <span class="color-option active" style="background-color: @product.Color;"></span>
