@@ -1,0 +1,41 @@
+﻿@model Business.Models.Order
+@{
+    ViewData["Title"] = "Edit Order Status";
+}
+
+<h2 class="mb-3 text-center">Edit Order Status</h2>
+
+@Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+<div class="card shadow-sm mx-auto" style="max-width: 500px;">
+    <div class="card-body">
+        <form asp-action="EditStatus" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Order ID</label>
+                <input class="form-control" value="@Model.Id" readonly />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">User</label>
+                <input class="form-control" value="@Model.User?.Username" readonly />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label">Status</label>
+                <select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList">
+                    <option value="">-- Select Status --</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary px-4">Save</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

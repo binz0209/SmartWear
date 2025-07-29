@@ -1,77 +1,354 @@
 ﻿@model IEnumerable<Business.Models.AuditLog>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Audit Logs";
+    var actions = ViewBag.Actions as List<string>;
+    var selected = ViewBag.SelectedAction as string;
 }
 
-<h1>Index</h1>
+<style>
+    .audit-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0.5rem;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Action)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IpAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedOn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModifiedOn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeletedOn)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Action)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IpAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedOn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedOn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedOn)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    .filter-card {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .audit-table {
+        background: white;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+        .audit-table thead {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+
+            .audit-table thead th {
+                border: none;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.875rem;
+                letter-spacing: 0.5px;
+                padding: 1rem 0.75rem;
+            }
+
+        .audit-table tbody tr {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+            .audit-table tbody tr:hover {
+                background-color: #f8f9fa;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+        .audit-table tbody td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+            border: none;
+        }
+
+    .action-badge {
+        display: inline-block;
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .action-create {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .action-update {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .action-delete {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .action-login {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .action-logout {
+        background-color: #e2e3e5;
+        color: #383d41;
+    }
+
+    .action-default {
+        background-color: #e7f3ff;
+        color: #004085;
+    }
+
+    .time-cell {
+        font-family: 'Courier New', monospace;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #374151;
+        letter-spacing: 0.5px;
+    }
+
+    .time-cell small {
+        font-size: 0.97rem;
+        color: #6c757d;
+        display: block;
+        margin-top: 2px;
+        font-weight: 400;
+    }
+
+    .user-cell {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .ip-cell {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .description-cell {
+        max-width: 300px;
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+
+    .no-logs-card {
+        background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 3rem 2rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .filter-select {
+        border: 2px solid #e9ecef;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background-color: white;
+    }
+
+        .filter-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+    .stats-row {
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-left: 4px solid #667eea;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="audit-header text-center">
+        <div class="container">
+            <h1 class="mb-2">
+                <i class="fas fa-clipboard-list me-2"></i>
+                Audit Logs
+            </h1>
+            <p class="mb-0 opacity-75">Monitor and track system activities</p>
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row stats-row">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">@Model.Count()</div>
+                <div class="stat-label">Total Logs</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">@Model.Where(l => l.CreatedOn.Date == DateTime.Today).Count()</div>
+                <div class="stat-label">Today</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">@Model.Select(l => l.User?.Username).Distinct().Count()</div>
+                <div class="stat-label">Unique Users</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">@actions.Count()</div>
+                <div class="stat-label">Action Types</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-card">
+        <form method="get" class="row align-items-center">
+            <div class="col-md-3">
+                <label for="actionFilter" class="form-label fw-semibold">
+                    <i class="fas fa-filter me-1"></i>
+                    Filter by Action
+                </label>
+            </div>
+            <div class="col-md-6">
+                <select name="actionFilter" id="actionFilter" class="form-select filter-select" onchange="this.form.submit()">
+                    <option value="">🔍 All Actions</option>
+                    @foreach (var act in actions)
+                    {
+                        <option value="@act" selected="@(act == selected ? "selected" : null)">
+                            @act (@Model.Count(l => l.Action == act))
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                @if (!string.IsNullOrEmpty(selected))
+                {
+                    <a href="?" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i>
+                        Clear Filter
+                    </a>
+                }
+            </div>
+        </form>
+    </div>
+
+    <!-- Table Section -->
+    @if (Model.Any())
+    {
+        <div class="audit-table">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:160px">
+                            <i class="fas fa-clock me-1"></i>
+                            Timestamp
+                        </th>
+                        <th style="width:180px">
+                            <i class="fas fa-user me-1"></i>
+                            User
+                        </th>
+                        <th style="width:150px">
+                            <i class="fas fa-cog me-1"></i>
+                            Action
+                        </th>
+                        <th>
+                            <i class="fas fa-info-circle me-1"></i>
+                            Description
+                        </th>
+                        <th style="width:150px">
+                            <i class="fas fa-globe me-1"></i>
+                            IP Address
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model)
+                    {
+                        <tr>
+                            <td class="time-cell">
+                                <div>@log.CreatedOn.ToString("dd/MM/yyyy")</div>
+                                <small class="text-muted">@log.CreatedOn.ToString("HH:mm:ss")</small>
+                            </td>
+                            <td class="user-cell">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-2"
+                                         style="width: 32px; height: 32px; font-size: 0.75rem; color: white;">
+                                        @((log.User?.Username ?? "?").Substring(0, 1).ToUpper())
+                                    </div>
+                                    <div>
+                                        @(log.User != null ? log.User.Username : "Unknown")
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @{
+                                    var actionClass = log.Action.ToLower() switch
+                                    {
+                                        var x when x.Contains("create") => "action-create",
+                                        var x when x.Contains("update") || x.Contains("edit") => "action-update",
+                                        var x when x.Contains("delete") => "action-delete",
+                                        var x when x.Contains("login") => "action-login",
+                                        var x when x.Contains("logout") => "action-logout",
+                                        _ => "action-default"
+                                    };
+                                }
+                                <span class="action-badge @actionClass">@log.Action</span>
+                            </td>
+                            <td class="description-cell">@log.Description</td>
+                            <td class="ip-cell">
+                                <code>@log.IpAddress</code>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="no-logs-card">
+            <div class="mb-3">
+                <i class="fas fa-search" style="font-size: 3rem; opacity: 0.7;"></i>
+            </div>
+            <h4 class="mb-2">No Audit Logs Found</h4>
+            <p class="mb-0">
+                @if (!string.IsNullOrEmpty(selected))
+                {
+                    <span>No logs found for action "@selected". <a href="?" class="text-white text-decoration-underline">View all logs</a></span>
+                }
+                else
+                {
+                    <span>There are currently no audit logs to display.</span>
+                }
+            </p>
+        </div>
+    }
+</div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

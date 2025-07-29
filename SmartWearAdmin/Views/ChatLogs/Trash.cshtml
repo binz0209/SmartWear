@@ -1,0 +1,37 @@
+﻿@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Trash - Deleted Chat Logs";
+}
+
+<h2 class="mb-3 text-center">Trash Bin - Deleted Chat Users</h2>
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-danger text-center">
+        <tr>
+            <th>User</th>
+            <th>Deleted Chat Count</th>
+            <th>Last Deleted</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="text-center align-middle">
+                <td>@item.User.Username (@item.User.Email)</td>
+                <td>@item.ChatCount</td>
+                <td>@(item.LastDeleted?.ToString("dd/MM/yyyy HH:mm"))</td>
+                <td>
+                    <form asp-action="Restore" method="post" asp-route-userId="@item.User.Id" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success btn-sm">Restore</button>
+                    </form>
+                    <form asp-action="DeletePermanently" method="post" asp-route-userId="@item.User.Id" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-sm">Delete Permanently</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Index" class="btn btn-secondary">Back</a>

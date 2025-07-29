@@ -1,59 +1,75 @@
 ﻿@model IEnumerable<Business.Models.Cart>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Cart Management";
 }
 
-<h1>Index</h1>
+<h2 class="mb-3 text-center">Cart List</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
+<p class="text-center">
+    <a asp-action="Create" class="btn btn-primary me-2">
+        <i class="fa fa-plus"></i> Add New Cart
+    </a>
+    <a asp-action="Trash" class="btn btn-outline-secondary">
+        <i class="fa fa-trash"></i> Trash
+    </a>
 </p>
-<table class="table">
-    <thead>
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-dark text-center">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedOn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModifiedOn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeletedOn)
-            </th>
-            <th></th>
+            <th>User</th>
+            <th>Created On</th>
+            <th>Modified On</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedOn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedOn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedOn)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var cart in Model.Where(c => !c.IsDeleted)) // Filter out deleted carts
+        {
+            <tr class="text-center align-middle">
+                <td>@cart.User.Username</td>
+                <td>@cart.CreatedOn.ToString("dd/MM/yyyy")</td>
+                <td>@(cart.ModifiedOn?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@cart.Id" class="btn btn-sm btn-info">Details</a>
+                    <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="@cart.Id">Delete</button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        // Event listener to handle delete button clicks with confirmation
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function () {
+                const id = this.getAttribute('data-id');
+                if (confirm('Are you sure you want to delete this cart?')) {
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                    // Send AJAX request to delete the cart
+                    fetch(`/Carts/DeleteConfirmedAjax/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            // Reload the page after deletion is successful
+                            location.reload();
+                        } else {
+                            alert('Delete failed!');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

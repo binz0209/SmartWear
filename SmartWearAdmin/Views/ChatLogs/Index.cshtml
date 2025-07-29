@@ -1,71 +1,38 @@
-﻿@model IEnumerable<Business.Models.ChatLog>
-
+﻿@model IEnumerable<dynamic> 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "ChatLog Users";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
+<h2 class="mb-3 text-center">Chat Users</h2>
+<p class="text-center">
+    <a asp-action="Trash" class="btn btn-primary me-2">
+        <i class="fa fa-trash"></i> Trash
+    </a>
 </p>
-<table class="table">
-    <thead>
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-dark text-center">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserQuestion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BotResponse)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedOn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModifiedOn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeletedOn)
-            </th>
-            <th></th>
+            <th>User</th>
+            <th>Chat Count</th>
+            <th>Last Chat</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserQuestion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BotResponse)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedOn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedOn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedOn)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr class="text-center align-middle">
+                <td>@item.User.Username (@item.User.Email)</td>
+                <td>@item.ChatCount</td>
+                <td>@(item.LastChat?.ToString("dd/MM/yyyy HH:mm"))</td>
+                <td>
+                    <a asp-action="UserChat" asp-route-userId="@item.User.Id" class="btn btn-info btn-sm">View Chat</a>
+                    <form asp-action="SoftDelete" method="post" asp-route-userId="@item.User.Id" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

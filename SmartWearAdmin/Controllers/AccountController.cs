@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Business.Data;
 using System.Linq;
+using System;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace SmartWearAdmin.Controllers
 {
@@ -13,11 +16,27 @@ namespace SmartWearAdmin.Controllers
             _context = context;
         }
 
+        private async Task AddAuditLog(string action, string description, Guid userId)
+        {
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            await _context.AuditLogs.AddAsync(new Business.Models.AuditLog
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Action = action,
+                Description = description,
+                IpAddress = ip,
+                CreatedOn = DateTime.UtcNow
+            });
+            await _context.SaveChangesAsync();
+        }
+
         [HttpGet]
         public IActionResult Login() => View();
 
         [HttpPost]
-        public IActionResult Login(string username, string password)
+        public async Task<IActionResult> Login(string username, string password)
         {
             var user = _context.Users
                 .Where(u => u.Username == username && u.PasswordHash == password && !u.IsDeleted)
@@ -26,16 +45,27 @@ namespace SmartWearAdmin.Controllers
 
             if (user == null || user.RoleName != "Admin")
             {
-                ViewBag.Error = "Sai tài khoản hoặc mật khẩu";
+                // Optional: Audit failed logins
+                // await AddAuditLog("LoginFailed", $"Failed login with username: {username}", Guid.Empty);
+
+                ViewBag.Error = "Incorrect username or password";
                 return View();
             }
 
             HttpContext.Session.SetString("AdminId", user.Id.ToString());
+
+            await AddAuditLog("Login", $"Admin: {user.Username} logged in.", user.Id);
+
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
+            Guid userId = Guid.Empty;
+            if (Guid.TryParse(HttpContext.Session.GetString("AdminId"), out Guid uid)) userId = uid;
+
+            await AddAuditLog("Logout", $"Admin logged out.", userId);
+
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }

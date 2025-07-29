@@ -17,14 +17,17 @@ namespace SmartWear.Controllers
         private readonly IEmailOtpService _otpService;
         private readonly ILogger<AccountController> _logger;
         private readonly IOrderService _orderService;
+        private readonly IAuditLogService _auditLogService;
 
-        public AccountController(IUserService userService, IRoleService roleService, ILogger<AccountController> logger, IEmailOtpService otpService, IOrderService orderService)
+        public AccountController(IUserService userService, IRoleService roleService, ILogger<AccountController> logger,
+            IEmailOtpService otpService, IOrderService orderService, IAuditLogService auditLogService)
         {
             _userService = userService;
             _roleService = roleService;
             _orderService = orderService;
             _logger = logger;
             _otpService = otpService;
+            _auditLogService = auditLogService;
         }
 
         [HttpGet]
@@ -172,6 +175,9 @@ namespace SmartWear.Controllers
 
             await HttpContext.SignInAsync("MyCookieAuth", claimsPrincipal, authProperties);
 
+            // AUDIT LOG: Đăng nhập thành công
+            await AddAuditLogAsync("Login", $"User {user.Username} logged in.", user.Id);
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -253,9 +259,16 @@ namespace SmartWear.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            // Lấy userId từ Claims
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Guid.TryParse(userIdClaim, out var userId);
+
+            await AddAuditLogAsync("Logout", "User logged out.", userId);
+
             await HttpContext.SignOutAsync("MyCookieAuth");
             return RedirectToAction("Index", "Home");
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -441,6 +454,21 @@ namespace SmartWear.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        
+
+        private async Task AddAuditLogAsync(string action, string description, Guid userId)
+        {
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var log = new AuditLog
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                Action = action,
+                Description = description,
+                IpAddress = ip,
+                CreatedOn = DateTime.UtcNow
+            };
+            await _auditLogService.AddAuditLogAsync(log);
+        }
+
     }
 }

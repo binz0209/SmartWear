@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Business.Models.Cart>
+
+@{
+    ViewData["Title"] = "Trash Bin - Deleted Carts";
+}
+
+<h2 class="mb-3 text-center">Trash Bin - Deleted Carts</h2>
+
+<p class="text-center">
+    <a asp-action="Index" class="btn btn-secondary me-2">
+        <i class="fa fa-arrow-left"></i> Back to List
+    </a>
+    <form asp-action="CleanTrash" method="post" class="d-inline">
+        <button type="submit" class="btn btn-danger">
+            <i class="fa fa-trash"></i> Clean Trash
+        </button>
+    </form>
+</p>
+
+<form id="antiForgeryForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-danger text-center">
+        <tr>
+            <th>User</th>
+            <th>Created On</th>
+            <th>Deleted On</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Where(c => c.IsDeleted))
+        {
+            <tr class="text-center align-middle">
+                <td>@item.User.Username</td>
+                <td>@item.CreatedOn.ToString("dd/MM/yyyy")</td>
+                <td>@item.DeletedOn?.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <form asp-action="Restore" method="post" asp-route-id="@item.Id" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-success">Restore</button>
+                    </form>
+                    <form asp-action="DeletePermanently" method="post" asp-route-id="@item.Id" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-danger">Delete Permanently</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

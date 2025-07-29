@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Business.Data;
 using Business.Models;
@@ -19,147 +17,96 @@ namespace SmartWearAdmin.Controllers
             _context = context;
         }
 
-        // GET: ChatLogs
+        // INDEX: Liệt kê từng user có chatlog (group by User)
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.ChatLogs.Include(c => c.User);
-            return View(await applicationDbContext.ToListAsync());
+            var userChats = await _context.ChatLogs
+                .Where(cl => !cl.IsDeleted)
+                .GroupBy(cl => cl.User)
+                .Select(g => new
+                {
+                    User = g.Key,
+                    ChatCount = g.Count(),
+                    LastChat = g.Max(x => x.CreatedOn)
+                })
+                .OrderByDescending(x => x.LastChat)
+                .ToListAsync();
+
+            return View(userChats);
         }
 
-        // GET: ChatLogs/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        // Xem chi tiết chat của từng user
+        public async Task<IActionResult> UserChat(Guid userId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return NotFound();
 
-            var chatLog = await _context.ChatLogs
-                .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (chatLog == null)
-            {
-                return NotFound();
-            }
+            var chatLogs = await _context.ChatLogs
+                .Where(cl => cl.UserId == userId && !cl.IsDeleted)
+                .OrderBy(cl => cl.CreatedOn)
+                .ToListAsync();
 
-            return View(chatLog);
+            ViewBag.User = user;
+            return View(chatLogs);
         }
 
-        // GET: ChatLogs/Create
-        public IActionResult Create()
-        {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
-            return View();
-        }
-
-        // POST: ChatLogs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Xóa mềm chatlog của user (set IsDeleted=true cho tất cả chatlog của user)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,UserQuestion,BotResponse,Id,CreatedOn,ModifiedOn,IsDeleted,DeletedOn")] ChatLog chatLog)
+        public async Task<IActionResult> SoftDelete(Guid userId)
         {
-            if (ModelState.IsValid)
+            var chatLogs = await _context.ChatLogs.Where(cl => cl.UserId == userId && !cl.IsDeleted).ToListAsync();
+            foreach (var cl in chatLogs)
             {
-                chatLog.Id = Guid.NewGuid();
-                _context.Add(chatLog);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                cl.IsDeleted = true;
+                cl.DeletedOn = DateTime.UtcNow;
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", chatLog.UserId);
-            return View(chatLog);
-        }
-
-        // GET: ChatLogs/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var chatLog = await _context.ChatLogs.FindAsync(id);
-            if (chatLog == null)
-            {
-                return NotFound();
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", chatLog.UserId);
-            return View(chatLog);
-        }
-
-        // POST: ChatLogs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("UserId,UserQuestion,BotResponse,Id,CreatedOn,ModifiedOn,IsDeleted,DeletedOn")] ChatLog chatLog)
-        {
-            if (id != chatLog.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(chatLog);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ChatLogExists(chatLog.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", chatLog.UserId);
-            return View(chatLog);
-        }
-
-        // GET: ChatLogs/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var chatLog = await _context.ChatLogs
-                .Include(c => c.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (chatLog == null)
-            {
-                return NotFound();
-            }
-
-            return View(chatLog);
-        }
-
-        // POST: ChatLogs/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var chatLog = await _context.ChatLogs.FindAsync(id);
-            if (chatLog != null)
-            {
-                _context.ChatLogs.Remove(chatLog);
-            }
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ChatLogExists(Guid id)
+        // Trash: Liệt kê user có chatlog đã bị xóa mềm
+        public async Task<IActionResult> Trash()
         {
-            return _context.ChatLogs.Any(e => e.Id == id);
+            var userChats = await _context.ChatLogs
+                .Where(cl => cl.IsDeleted)
+                .GroupBy(cl => cl.User)
+                .Select(g => new
+                {
+                    User = g.Key,
+                    ChatCount = g.Count(),
+                    LastDeleted = g.Max(x => x.DeletedOn)
+                })
+                .OrderByDescending(x => x.LastDeleted)
+                .ToListAsync();
+
+            return View(userChats);
+        }
+
+        // Khôi phục toàn bộ chatlog của user
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Restore(Guid userId)
+        {
+            var chatLogs = await _context.ChatLogs.Where(cl => cl.UserId == userId && cl.IsDeleted).ToListAsync();
+            foreach (var cl in chatLogs)
+            {
+                cl.IsDeleted = false;
+                cl.DeletedOn = null;
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Trash));
+        }
+
+        // Xóa vĩnh viễn toàn bộ chatlog của user
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePermanently(Guid userId)
+        {
+            var chatLogs = await _context.ChatLogs.Where(cl => cl.UserId == userId && cl.IsDeleted).ToListAsync();
+            _context.ChatLogs.RemoveRange(chatLogs);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Trash));
         }
     }
 }
