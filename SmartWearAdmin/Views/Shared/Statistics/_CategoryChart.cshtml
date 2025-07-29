@@ -1,0 +1,72 @@
+﻿@{
+    var categories = ViewBag.Categories as IEnumerable<dynamic> ?? new List<dynamic>();
+}
+
+<div style="max-width: 500px; margin: 0 auto; text-align: center;" class="mb-4">
+    <h5 class="mb-3" style="font-size:18px;" >Products by Category:</h5>
+
+    <select id="categorySelect" class="form-control mb-3" style="width: 300px; margin: 0 auto;">
+        <option disabled selected>-- Select Category --</option>
+    </select>
+
+
+    <a href="/Products/Index" class="btn btn-primary" style="margin-top: 10px;">View More</a>
+</div>
+
+<div style="max-width: 500px; margin: 0 auto;">
+    <canvas id="barChart" height="300"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let chart;
+    chart = new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Quantity In Stock',
+                data: [],
+                backgroundColor: 'rgba(100, 149, 237, 0.7)',
+                borderWidth: 1,
+                barThickness: 40
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0,
+                    max: 200
+                }
+            }
+        }
+    });
+
+    fetch('/Statistics/GetCategories')
+        .then(res => res.json())
+        .then(data => {
+            const categorySelect = document.getElementById('categorySelect');
+            data.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                categorySelect.appendChild(option);
+            });
+        });
+
+    document.getElementById('categorySelect').addEventListener('change', function () {
+        const categoryId = this.value;
+
+        fetch(`/Statistics/GetProductsByCategory?categoryId=${categoryId}`)
+            .then(res => res.json())
+            .then(data => {
+                const labels = data.map(x => x.productName);
+                const quantities = data.map(x => x.stockQuantity);
+
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = quantities;
+                chart.update();
+            });
+    });
+</script>
